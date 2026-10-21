@@ -2,11 +2,14 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.3.4 – 2026-10-21
+- Obrazec 348 b. podle správného sestavení (díly 1–16 a blok 1a–1d); moduly 2–4 jsou jen otočený modul 1. Verze dat 3 ho jednorázově nastaví jako výchozí.
+- Pravidla: nové části „Řady a obrazce“ a „Nebezpečí“; příklad „Řada 16“ (do žlutého se nevejde) nahrazen hadem ze 16 dílů (260 b.).
+
 ## 1.3.3 – 2026-10-21
 - Simulace: v běžném zobrazení je hřiště pevné (kolečko posouvá stránku), přibližování a posun pohledu jen přes celou obrazovku.
 - Úvod: rámeček obrázku odpovídá obrázku i na nízkém displeji.
 - Pravidla: zestručněný text (bodování, příklady, na co pozor).
-- Pravidla: příklad „Řada 16“ (do žlutého se nevejde) nahrazen hadem ze 16 dílů (260 b.).
 - Simulace: kratší popisky legendy (správný / chybný / nevyužitý spoj, díl jen za 1 bod).
 
 ## 1.3.2 – 2026-10-21

@@ -262,21 +262,27 @@ function tilt(g, deg) {
   return { ...g, poses: g.poses.map(p => ({ x: p.x * c - p.y * s, y: p.x * s + p.y * c, a: ((p.a + deg) % 360 + 360) % 360 })) };
 }
 // Obrazec 16 ze skutečných dílů: díly 1–16 po řadě (po směru hodin), každá strana hřiště = jeden modul po 4.
-// Tvar FOUR_SAME tvoří 4 moduly stejného tvaru (B, C, D jsou zrcadlové k A), 12 kolmých spojů, 416 × 320 mm.
+// Obrazec 348 b. tvoří 4 moduly stejného tvaru (2, 3, 4 jsou jen otočený modul 1), 12 kolmých spojů, 416 × 320 mm.
 const FOUR_SAME = 'LSLRRSRLRSRLRSRR';
-const MODULE_SHAPE = 'stejný tvar jako ostatní moduly (otočený nebo zrcadlový)';
+const MODULE_SHAPE = 'stejný tvar jako modul 1, jen otočený';
 const MODULES = [
   { key: '1', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
   { key: '2', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
   { key: '3', ids: [8, 9, 10, 11], side: 'dolní strana', shape: MODULE_SHAPE },
   { key: '4', ids: [12, 13, 14, 15], side: 'levá strana', shape: MODULE_SHAPE },
 ];
+// Obrazec 348 b. přesně podle sestavení od uživatele: [x, y, úhel] v mm, úhel už otáčí díl tak, aby barvy ve spojích seděly
+const OWN348 = [[208, 96, 90], [240, 160, 0], [336, 160, 0], [400, 128, 270], [432, 64, 180], [464, 128, 270], [464, 224, 90], [400, 256, 0],
+  [368, 320, 90], [304, 352, 0], [208, 352, 0], [176, 288, 90], [112, 256, 180], [80, 192, 270], [80, 96, 270], [144, 64, 0]];
 function ownLoop(Y, base, upto = 4, steps = FOUR_SAME) {
-  const poses = pack([G.loop(steps.split(''))], Y);
+  const fixed = steps === FOUR_SAME;
+  const poses = fixed
+    ? pack([{ poses: OWN348.map(([x, y, a]) => ({ x, y, a })), col: base.map(c => [...c]) }], Y)
+    : pack([G.loop(steps.split(''))], Y);
   let need = base[0][0];
   const out = poses.map((q, k) => {
     const c = base[k], rev = c[0] !== need; need = rev ? c[0] : c[1];
-    return { x: q.x, y: q.y, a: (q.a + (rev ? 180 : 0)) % 360, c: [...c], flip: false, rev };
+    return { x: q.x, y: q.y, a: fixed ? q.a : (q.a + (rev ? 180 : 0)) % 360, c: [...c], flip: false, rev };
   });
   return out.slice(0, upto * 4);
 }
@@ -335,7 +341,7 @@ function variantLayout(v, Y, START, baseColors) {
     ['B','B'],['G','B'],['G','G'],['B','G'],   // 9–12 dole zprava (horní / dolní polovina)
     ['B','R'],['R','G'],['G','Y'],['Y','Y'],   // 13–16 vlevo zdola (levá / pravá polovina)
   ];
-  const M = 30, KEY = 'robosoutez-2026-data', DATA_VERSION = 2;
+  const M = 30, KEY = 'robosoutez-2026-data', DATA_VERSION = 3;
   // Hrací pole (polovina soutěžní plochy) podle plánku, mm od levého horního vnitřního rohu
   const FIELD = { w: 1680, h: 1249 };
   const RX0 = 280, RX1 = 1400, RY0 = 280, RY1 = 980;      // černý obdélník
@@ -358,7 +364,7 @@ function variantLayout(v, Y, START, baseColors) {
   let sel = -1, grid = true, view = null, result = null;
 
   try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.dataVersion === DATA_VERSION && s.pieces && s.pieces.length === 16) { pieces = s.pieces; } } catch (e) {}
-  // Migrace dat 1 → 2: starší uložené rozložení se nepřebírá, jednorázově se nastaví výchozí (348 b.); dál se rozložení uživatele zachovává.
+  // Migrace dat 1/2 → 3: starší uložené rozložení se nepřebírá, jednorázově se nastaví výchozí obrazec 348 b. ve správném sestavení; dál se rozložení uživatele zachovává.
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ dataVersion: DATA_VERSION, pieces, Y, grid })); } catch (e) {} };
 
   const fitView = () => {
@@ -667,7 +673,7 @@ function variantLayout(v, Y, START, baseColors) {
   }
   function moduleCard(list) {
     const d = document.createElement('div'); d.className = 'modpart';
-    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část (moduly 1–4, díly a–d): 1 tak, jak je, 2, 3 a 4 otočené a zrcadlově převrácené.</span>`;
+    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část (moduly 1–4, díly a–d), každá jen otočená o 90°.</span>`;
     return d;
   }
   function renderModules() {
