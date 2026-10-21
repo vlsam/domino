@@ -2,6 +2,9 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.2.1 – 2026-10-21
+- Úvodní obrazovka: grafika hrací plochy s výchozím rozmístěním dílů.
+
 ## 1.2.0 – 2026-10-21
 - Kontrola verze při spuštění a při návratu do aplikace: dokud neproběhne, nejde vstoupit; novější verze se hned načte.
 - Simulace se otevírá rovnou přes celou obrazovku; zrušena tlačítka +/−/Celé a panely vybraného dílu a seznamu dílů,
