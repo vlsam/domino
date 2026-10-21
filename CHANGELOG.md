@@ -6,6 +6,7 @@ Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 - Simulace: v běžném zobrazení je hřiště pevné (kolečko posouvá stránku), přibližování a posun pohledu jen přes celou obrazovku.
 - Úvod: rámeček obrázku odpovídá obrázku i na nízkém displeji.
 - Pravidla: zestručněný text (bodování, příklady, na co pozor).
+- Simulace: kratší popisky legendy (správný / chybný / nevyužitý spoj, díl jen za 1 bod).
 
 ## 1.3.2 – 2026-10-21
 - Úvod: větší obrázek hřiště, text a tlačítko pod ním.
