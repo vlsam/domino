@@ -45,7 +45,9 @@
       reloaded = true;
       location.reload();
     });
-    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((reg) => reg.update());
+    window.reloadOnce = () => { if (!reloaded) { reloaded = true; location.reload(); } };
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
+      .then((reg) => reg.update()).catch(() => {});
   }
 
   // Kontrola verze při spuštění (a při návratu do aplikace): dokud neproběhne, nejde vstoupit.
@@ -56,15 +58,18 @@
     say("Kontroluji verzi…");
     try {
       const res = await fetch("version.js?t=" + Date.now(), { cache: "no-store" });
-      const m = (await res.text()).match(/APP_VERSION = "([^"]+)"/);
-      const latest = m && m[1];
+      const m = res.ok && (await res.text()).match(/APP_VERSION = "([^"]+)"/);
+      if (!m) throw new Error("verze nenalezena");
+      const latest = m[1];
       if (latest && latest !== APP_VERSION && sessionStorage.getItem("updatedTo") !== latest) {
         sessionStorage.setItem("updatedTo", latest);
         say("Načítám novou verzi " + latest + "…");
         if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
         const reg = navigator.serviceWorker && (await navigator.serviceWorker.getRegistration());
-        if (reg) await reg.update();
-        location.reload();
+        if (reg) await reg.update().catch(() => {});
+        // Nový service worker po převzetí stránku obnoví sám (controllerchange); jinak obnovíme po chvíli.
+        const reload = window.reloadOnce || (() => location.reload());
+        if (reg && (reg.installing || reg.waiting)) setTimeout(reload, 3000); else reload();
         return;
       }
       say("Aktuální verze");

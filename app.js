@@ -262,9 +262,9 @@ function tilt(g, deg) {
   return { ...g, poses: g.poses.map(p => ({ x: p.x * c - p.y * s, y: p.x * s + p.y * c, a: ((p.a + deg) % 360 + 360) % 360 })) };
 }
 // Obrazec 16 ze skutečných dílů: díly 1–16 po řadě (po směru hodin), každá strana hřiště = jeden modul po 4.
-// Tvar FOUR_SAME tvoří 4 shodné moduly (stejný tvar, jen otočený), 12 kolmých spojů, 416 × 320 mm.
+// Tvar FOUR_SAME tvoří 4 moduly stejného tvaru (B, C, D jsou zrcadlové k A), 12 kolmých spojů, 416 × 320 mm.
 const FOUR_SAME = 'LSLRRSRLRSRLRSRR';
-const MODULE_SHAPE = 'stejný tvar jako ostatní moduly (otočený)';
+const MODULE_SHAPE = 'stejný tvar jako ostatní moduly (otočený nebo zrcadlový)';
 const MODULES = [
   { key: 'A', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
   { key: 'B', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
@@ -664,11 +664,11 @@ function variantLayout(v, Y, START, baseColors) {
   for (const k of ['x', 'y', 'w', 'h', 't']) { const inp = $('y' + k); inp.value = Y[k]; inp.onchange = () => { const v = Math.round(+inp.value); if (v >= 0) { Y[k] = v; drawBoard(); doScore(); renderVariants(); renderModules(); } }; }
 
   const simEl = document.querySelector('.sim'), fsBtn = $('fs');
-  function setFull(on) {
+  function setFull(on, nativeFs = true) {
     simEl.classList.toggle('full', on); fsBtn.setAttribute('aria-pressed', on); fsBtn.textContent = on ? 'Zavřít' : 'Celá obrazovka';
     document.documentElement.style.overflow = on ? 'hidden' : '';
     try {
-      if (on && !document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+      if (on && nativeFs && !document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
       if (!on && document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     } catch (e) {}
     requestAnimationFrame(() => { view = fitView(); applyView(); });
@@ -688,7 +688,7 @@ function variantLayout(v, Y, START, baseColors) {
     document.querySelectorAll('.tabbar [data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'page' : 'false'));
     if (push && location.hash !== '#' + name) { try { history.pushState(null, '', '#' + name); } catch (e) {} }
     window.scrollTo(0, 0);
-    if (name === 'simulace') setFull(true);
+    if (name === 'simulace') setFull(true, push);
     else if (simEl.classList.contains('full')) setFull(false);
   }
   function showIntro(push = true) {

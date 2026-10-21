@@ -21,7 +21,9 @@ self.addEventListener("activate", (event) => {
 // Ze sítě, při výpadku z cache.
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  const url = new URL(req.url);
+  if (req.method !== "GET" || url.origin !== location.origin) return;
+  if (url.pathname.endsWith("/version.js") && url.search) return; // kontrola verze: jen ze sítě, bez cache
   event.respondWith(
     fetch(req, { cache: "no-cache" })
       .then((res) => {
