@@ -4,6 +4,7 @@ Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
 ## 1.3.0 – 2026-10-21
 - Simulace přes celou obrazovku: v rohu rozpis bodů (díl 1 b., řada n×n, obrazec n×n + rohy + bonus).
+- Návrhy: jen varianty od 270 bodů, karty pod sebou přes celou šířku, první obrazec ze 4 stejných modulů.
 - Po „Vstoupit“ se otevřou Pravidla; Simulace má běžné zobrazení, celá obrazovka jen tlačítkem; ve spodní liště ikona Domů (návrat na úvod).
 
 ## 1.2.1 – 2026-10-21
