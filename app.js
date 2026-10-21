@@ -266,10 +266,10 @@ function tilt(g, deg) {
 const FOUR_SAME = 'LSLRRSRLRSRLRSRR';
 const MODULE_SHAPE = 'stejný tvar jako ostatní moduly (otočený nebo zrcadlový)';
 const MODULES = [
-  { key: 'A', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
-  { key: 'B', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
-  { key: 'C', ids: [8, 9, 10, 11], side: 'dolní strana', shape: MODULE_SHAPE },
-  { key: 'D', ids: [12, 13, 14, 15], side: 'levá strana', shape: MODULE_SHAPE },
+  { key: '1', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
+  { key: '2', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
+  { key: '3', ids: [8, 9, 10, 11], side: 'dolní strana', shape: MODULE_SHAPE },
+  { key: '4', ids: [12, 13, 14, 15], side: 'levá strana', shape: MODULE_SHAPE },
 ];
 function ownLoop(Y, base, upto = 4, steps = FOUR_SAME) {
   const poses = pack([G.loop(steps.split(''))], Y);
@@ -592,13 +592,13 @@ function variantLayout(v, Y, START, baseColors) {
   // Varianty nad 160 bodů s náhledem
   // Moduly (díly 1–4, 5–8, 9–12, 13–16) zvýrazněné obrysem a písmenem
   const MOD_COL = ['#111827', '#7c3aed', '#db2777', '#0284c7'];
+  // Označení dílů v náhledu: číslo modulu + písmeno dílu (1a, 1b, …) v malém kroužku uprostřed dílu
+  const pieceTag = (x, y, m, k) => `<circle cx="${x}" cy="${y}" r="13" fill="${MOD_COL[m]}"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#fff">${m + 1}${'abcd'[k]}</text>`;
   function moduleMarks(list) {
     let h = '';
     for (let m = 0; m < 4; m++) {
       const grp = list.slice(m * 4, m * 4 + 4); if (grp.length < 4) break;
-      for (const p of grp) h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-47" y="-15" width="94" height="30" fill="none" stroke="${MOD_COL[m]}" stroke-width="2" stroke-opacity=".85"/></g>`;
-      const cx = grp.reduce((a, p) => a + p.x, 0) / 4, cy = grp.reduce((a, p) => a + p.y, 0) / 4;
-      h += `<circle cx="${cx}" cy="${cy}" r="17" fill="${MOD_COL[m]}" fill-opacity=".9"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="700" fill="#fff">${'ABCD'[m]}</text>`;
+      grp.forEach((p, k) => { h += pieceTag(p.x, p.y, m, k); });
     }
     return h;
   }
@@ -658,11 +658,12 @@ function variantLayout(v, Y, START, baseColors) {
     const grp = list.slice(0, 4), b = bbox(grp), m = 12;
     let h = `<svg viewBox="${b.x0 - m} ${b.y0 - m} ${b.w + 2 * m} ${b.h + 2 * m}" aria-hidden="true">`;
     for (const p of grp) h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-48" y="-16" width="48" height="32" fill="${HEX[p.c[0]]}"/><rect x="0" y="-16" width="48" height="32" fill="${HEX[p.c[1]]}"/><rect x="-48" y="-16" width="96" height="32" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="2"/></g>`;
+    grp.forEach((p, k) => { h += pieceTag(p.x, p.y, 0, k); });
     return h + '</svg>';
   }
   function moduleCard(list) {
     const d = document.createElement('div'); d.className = 'modpart';
-    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část: A tak, jak je, B, C a D otočené a zrcadlově převrácené.</span>`;
+    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část (moduly 1–4, díly a–d): 1 tak, jak je, 2, 3 a 4 otočené a zrcadlově převrácené.</span>`;
     return d;
   }
   function renderModules() {
