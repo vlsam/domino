@@ -176,3 +176,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .sim.full .breakdown li.loopbad{color:#b45309}
 .sim.full .breakdown li.p1{color:#6b7280}
 .sim.full .hint{top:auto;bottom:calc(max(8px,env(safe-area-inset-bottom,0px)) + 60px)}
+.modpart{grid-column:1/-1;display:grid;grid-template-columns:auto auto 1fr;gap:10px;align-items:center;padding:10px;background:var(--surface);border:1px dashed var(--line);border-radius:6px}
+.modpart .mp-img svg{display:block;width:110px;height:auto}
+.modpart .mp-x{font:800 26px var(--display)}
+.modpart .mp-t{font-size:13px;color:var(--muted);min-width:0}
+.modpart .mp-t b{display:block;color:var(--fg);font-size:14px}

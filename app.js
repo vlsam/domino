@@ -625,6 +625,7 @@ function variantLayout(v, Y, START, baseColors) {
       if (singles) parts.push(`${singles} × 1`);
       b.innerHTML = `<span class="vt">${thumb(lay, v.modules)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
       if (v.own) { const t = document.createElement('span'); t.className = 'vtag own'; t.textContent = 'vaše skutečné barvy'; b.querySelector('.vb').appendChild(t); }
+      if (v.id === 'vase16') b.querySelector('.vb').appendChild(moduleCard(lay));
       if (v.ref) {
         const t = document.createElement('span'), d = byId[v.ref] != null ? byId[v.ref] - r.total : null;
         const lab = v.touch ? 'dotek čáry' : v.tiltDeg ? `sklon ${v.tiltDeg}°` : 'chybná barva';
@@ -652,9 +653,22 @@ function variantLayout(v, Y, START, baseColors) {
     return Array.from({ length: 16 }, (_, i) => i < used.length ? { id: i, ...used[i], placed: true } : { id: i, ...START[i], c: [...DEF_COLORS[i]], flip: false, placed: true });
   }
   const HEXN = { R: 'červená', Y: 'žlutá', B: 'modrá', G: 'zelená' };
+  // Obrázek opakující se části (modul A = díly 1–4), oříznutý na její rozměr
+  function moduleSvg(list) {
+    const grp = list.slice(0, 4), b = bbox(grp), m = 12;
+    let h = `<svg viewBox="${b.x0 - m} ${b.y0 - m} ${b.w + 2 * m} ${b.h + 2 * m}" aria-hidden="true">`;
+    for (const p of grp) h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-48" y="-16" width="48" height="32" fill="${HEX[p.c[0]]}"/><rect x="0" y="-16" width="48" height="32" fill="${HEX[p.c[1]]}"/><rect x="-48" y="-16" width="96" height="32" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="2"/></g>`;
+    return h + '</svg>';
+  }
+  function moduleCard(list) {
+    const d = document.createElement('div'); d.className = 'modpart';
+    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část: A tak, jak je, B, C a D otočené a zrcadlově převrácené.</span>`;
+    return d;
+  }
   function renderModules() {
     const box = $('modules'); if (!box) return; box.textContent = '';
     const full = ownLoop(Y, DEF_COLORS, 4);
+    box.appendChild(moduleCard(full));
     MODULES.forEach((m, k) => {
       const lay = stageLayout(k + 1), r = scoreLayout(lay, Y);
       const seq = m.ids.map(i => { const q = full[i], a = q.rev ? q.c[1] : q.c[0], b = q.rev ? q.c[0] : q.c[1]; return `${i + 1} (${HEXN[a]}→${HEXN[b]})`; });
