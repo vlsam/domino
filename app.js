@@ -710,7 +710,7 @@ function variantLayout(v, Y, START, baseColors) {
     $('app').hidden = true; $('intro').hidden = false;
     if (push) { try { history.pushState(null, '', location.pathname + location.search); } catch (e) {} }
   }
-  $('enter').onclick = () => showView('simulace');
+  $('enter').onclick = () => showView('pravidla');
   $('home').onclick = () => showIntro();
   document.querySelectorAll('.tabbar [data-go]').forEach(b => b.onclick = () => showView(b.dataset.go));
   $('tabhome').onclick = () => showIntro();
