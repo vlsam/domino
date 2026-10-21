@@ -594,9 +594,9 @@ function variantLayout(v, Y, START, baseColors) {
   const MOD_COL = ['#111827', '#7c3aed', '#db2777', '#0284c7'];
   // Označení dílů v náhledu: číslo modulu + písmeno dílu (1a, 1b, …) v malém kroužku uprostřed dílu
   const pieceTag = (x, y, m, k) => `<circle cx="${x}" cy="${y}" r="13" fill="${MOD_COL[m]}"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#fff">${m + 1}${'abcd'[k]}</text>`;
-  function moduleMarks(list) {
+  function moduleMarks(list, count = 4) {
     let h = '';
-    for (let m = 0; m < 4; m++) {
+    for (let m = 0; m < count; m++) {
       const grp = list.slice(m * 4, m * 4 + 4); if (grp.length < 4) break;
       grp.forEach((p, k) => { h += pieceTag(p.x, p.y, m, k); });
     }
@@ -610,7 +610,7 @@ function variantLayout(v, Y, START, baseColors) {
       const c0 = p.flip ? HEX.K : HEX[p.c[0]], c1 = p.flip ? HEX.K : HEX[p.c[1]];
       h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-48" y="-16" width="48" height="32" fill="${c0}"/><rect x="0" y="-16" width="48" height="32" fill="${c1}"/><rect x="-48" y="-16" width="96" height="32" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2"/></g>`;
     }
-    if (mods) h += moduleMarks(list);
+    if (mods) h += moduleMarks(list, mods === true ? 4 : mods);
     return h + '</svg>';
   }
   function renderVariants() {
@@ -676,7 +676,7 @@ function variantLayout(v, Y, START, baseColors) {
       const first = full[m.ids[0]], last = full[m.ids[3]];
       const inC = first.rev ? first.c[1] : first.c[0], outC = last.rev ? last.c[0] : last.c[1];
       const b = document.createElement('button'); b.type = 'button'; b.className = 'var';
-      b.innerHTML = `<span class="vt">${thumb(lay, true)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
+      b.innerHTML = `<span class="vt">${thumb(lay, k + 1)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
       b.querySelector('.vn').textContent = `Krok ${k + 1}: modul ${m.key}`;
       b.querySelector('.vc').textContent = seq.join(' · ');
       b.querySelector('.vx').textContent = `${m.side}, ${m.shape}; začíná ${HEXN[inC]}, končí ${HEXN[outC]}` + (k === 3 ? '. Poslední spoj uzavře obrazec.' : `. Navazuje modul ${MODULES[k + 1].key}.`);
