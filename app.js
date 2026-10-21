@@ -688,9 +688,6 @@ function variantLayout(v, Y, START, baseColors) {
   renderModules();
   $('clear').onclick = () => { pieces.forEach((p, i) => Object.assign(p, START[i], { flip: false, placed: true })); sel = -1; drawPieces(); doScore(); };
   $('allin').onclick = () => { const r0 = scoreLayout(pieces, Y); pieces.forEach((p, i) => { if (!r0.st[i].p1) dropIn(i); }); drawPieces(); doScore(); };
-  $('resetcol').onclick = () => { pieces.forEach((p, i) => { p.c = [...DEF_COLORS[i]]; p.flip = false; }); drawPieces(); doScore(); };
-  $('grid').checked = grid; $('grid').onchange = e => { grid = e.target.checked; save(); };
-  for (const k of ['x', 'y', 'w', 'h', 't']) { const inp = $('y' + k); inp.value = Y[k]; inp.onchange = () => { const v = Math.round(+inp.value); if (v >= 0) { Y[k] = v; drawBoard(); doScore(); renderVariants(); renderModules(); } }; }
 
   const simEl = document.querySelector('.sim'), fsBtn = $('fs');
   function setFull(on, nativeFs = true) {
