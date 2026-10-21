@@ -12,3 +12,19 @@ pristupy/*.env
 # Ostatní
 node_modules/
 .DS_Store
+
+# Interní soubory projektu – zůstávají jen lokálně, na GitHub (a tím na web GitHub Pages) nepatří
+CLAUDE.md
+STAV.md
+README.md
+CAS.csv
+VYKAZ.md
+cas.ps1
+dashboard.ps1
+dashboard.html
+docs/
+sablony/
+pristupy/
+Dockerfile
+docker-compose.yml
+.dockerignore
