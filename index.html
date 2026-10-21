@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<title>RoboSoutěž 2026</title>
+<meta name="description" content="RoboSoutěž 2026: pravidla, simulace bodování a návrhy rozložení pro úlohu Domino.">
+<meta name="theme-color" content="#f6f6f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RoboSoutěž">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<div id="intro" class="intro">
+  <div class="intro-in">
+    <svg class="intro-art" viewBox="0 0 220 140" aria-hidden="true">
+      <rect x="6" y="6" width="208" height="128" fill="none" stroke="#f4d21a" stroke-width="8"/>
+      <g transform="translate(110 70)">
+        <rect x="-60" y="-36" width="30" height="20" fill="#d23a2e"/><rect x="-30" y="-36" width="30" height="20" fill="#2a5bc4"/>
+        <rect x="0" y="-36" width="30" height="20" fill="#2a5bc4"/><rect x="30" y="-36" width="30" height="20" fill="#f3c11c"/>
+        <rect x="40" y="-16" width="20" height="26" fill="#f3c11c"/><rect x="40" y="10" width="20" height="26" fill="#2f9a4f"/>
+        <rect x="-20" y="16" width="30" height="20" fill="#2f9a4f"/><rect x="10" y="16" width="30" height="20" fill="#2f9a4f"/>
+        <rect x="-60" y="16" width="20" height="20" fill="#d23a2e"/><rect x="-40" y="16" width="20" height="20" fill="#d23a2e"/>
+        <rect x="-60" y="-16" width="20" height="32" fill="#2a5bc4"/>
+      </g>
+    </svg>
+    <div class="intro-eyebrow">ČVUT FEL · středoškolské týmy · úloha Domino</div>
+    <h1 class="intro-title">RoboSoutěž <span>2026</span></h1>
+    <p class="intro-sub">Pravidla, simulace bodování a návrhy rozložení</p>
+    <button id="enter" class="intro-btn" type="button">Vstoupit</button>
+  </div>
+  <div class="intro-ver">verze 1.0.0 · 21. 10. 2026</div>
+</div>
+
+<div id="app" class="app" hidden>
+  <header class="appbar">
+    <button id="home" class="appbrand" type="button" aria-label="Zpět na úvod"><b>RoboSoutěž 2026</b><span>Domino</span></button>
+    <span class="appver">v1.0.0</span>
+  </header>
+  <main class="views">
+    <div class="view wrap" id="v-pravidla" data-view="pravidla" hidden>
+      <header>
+  <div class="eyebrow">Robosoutěž 2026 pro SŠ · úloha Domino · 90 s</div>
+  <h1>Pravidla a bodování</h1>
+  <p class="lead">Shrnutí bodování podle oficiálního zadání. Pravidla 2–5 platí jen pro díly celé uvnitř žlutého obdélníku, barvou nahoru a s napojením v toleranci (úhel ≤ 10°, mezera ≤ 5 mm, boční posun ≤ 5 mm).</p>
+</header>
+      <section>
+  <h2>Pravidla v kostce</h2>
+  <ul class="rules">
+    <li><b class="k">P1</b><span><b>1 bod</b> za každý díl, který aspoň částí zasahuje do žlutého obdélníku (i obrácený nebo na jiném dílu). Max 16. Díl v posloupnosti už tento bod nedostává.</span></li>
+    <li><b class="k">P2</b><span>Posloupnost z <b>n</b> dílů se stejnou barvou ve spoji = <b>n × n</b> bodů. Nesprávná barva řetěz přeruší.</span></li>
+    <li><b class="k">P3</b><span><b>+1 bod</b> za každé správně navázané kolmé napojení (i to uzavírající).</span></li>
+    <li><b class="k">P4</b><span>Uzavřený obrazec, všechny spoje barevně správně: 4–7 dílů <b>+20</b>, 8–11 <b>+40</b>, 12–15 <b>+60</b>, 16 <b>+80</b>.</span></li>
+    <li><b class="k">P5</b><span>Uzavřený obrazec s aspoň jedním chybným barevným spojem: polovina P4 (<b>+10 / +20 / +30 / +40</b>).</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Modelové situace</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Robot udělá</th><th class="n">Dílů</th><th>Výpočet</th><th class="n">Body</th></tr></thead>
+    <tbody>
+      <tr><td>Strčí 1 díl aspoň částí do žlutého</td><td class="n">1</td><td class="calc">1</td><td class="pts">1</td></tr>
+      <tr><td>Nahrne všech 16 dílů bez ladu</td><td class="n">16</td><td class="calc">16 × 1</td><td class="pts">16</td></tr>
+      <tr><td>2 díly rovně za sebou, barva sedí</td><td class="n">2</td><td class="calc">2×2</td><td class="pts">4</td></tr>
+      <tr><td>2 díly do „L“ (kolmo), barva sedí</td><td class="n">2</td><td class="calc">2×2 + 1</td><td class="pts">5</td></tr>
+      <tr><td>3 díly rovně</td><td class="n">3</td><td class="calc">3×3</td><td class="pts">9</td></tr>
+      <tr><td>3 díly do „U“ (2 kolmé spoje)</td><td class="n">3</td><td class="calc">3×3 + 2</td><td class="pts">11</td></tr>
+      <tr><td>4 díly rovně</td><td class="n">4</td><td class="calc">4×4</td><td class="pts">16</td></tr>
+      <tr><td>Čtverec ze 4 dílů, barvy chybně u jednoho dílu</td><td class="n">4</td><td class="calc">1 + 3×3 + 2 + 10</td><td class="pts">22</td></tr>
+      <tr><td>Čtverec ze 4 dílů, vše správně<span class="tag">první velký skok</span></td><td class="n">4</td><td class="calc">4×4 + 4 + 20</td><td class="pts">40</td></tr>
+      <tr><td>8 dílů rovně v řadě</td><td class="n">8</td><td class="calc">8×8</td><td class="pts">64</td></tr>
+      <tr><td>2 samostatné čtverce</td><td class="n">8</td><td class="calc">2 × 40</td><td class="pts">80</td></tr>
+      <tr><td>Obdélník z 8 dílů, vše správně</td><td class="n">8</td><td class="calc">8×8 + 4 + 40</td><td class="pts">108</td></tr>
+      <tr><td>Obdélník z 8 + zbylých 8 jen nahrnout</td><td class="n">16</td><td class="calc">108 + 8</td><td class="pts">116</td></tr>
+      <tr><td>4 samostatné čtverce</td><td class="n">16</td><td class="calc">4 × 40</td><td class="pts">160</td></tr>
+      <tr><td>2 obdélníky po 8 dílech</td><td class="n">16</td><td class="calc">2 × 108</td><td class="pts">216</td></tr>
+      <tr><td>Řada 15 dílů (rovně)</td><td class="n">15</td><td class="calc">15×15</td><td class="pts">225</td></tr>
+      <tr><td>Řada všech 16 dílů (rovně)</td><td class="n">16</td><td class="calc">16×16</td><td class="pts">256</td></tr>
+      <tr><td>Obrazec ze 16, jeden barevně chybný spoj na rovině*</td><td class="n">16</td><td class="calc">16×16 + 4 + 40</td><td class="pts">300</td></tr>
+      <tr><td>Obrazec ze 16, vše správně, 4 rohy</td><td class="n">16</td><td class="calc">16×16 + 4 + 80</td><td class="pts">340</td></tr>
+      <tr class="top"><td>Obrazec ze 16, vše správně, 14 kolmých spojů<span class="tag">prakticky maximum</span></td><td class="n">16</td><td class="calc">16×16 + 14 + 80</td><td class="pts">350</td></tr>
+      <tr><td>Obrazec ze 16 s 16 kolmými spoji (do žlutého se nevejde)</td><td class="n">16</td><td class="calc">16×16 + 16 + 80</td><td class="pts">352</td></tr>
+    </tbody>
+  </table></div>
+  <p class="src">* Můj výpočet podle pravidel 2, 3 a 5 (zbylých 15 spojů tvoří jednu nepřerušenou posloupnost 16 dílů); v zadání tento případ přímo jako příklad není. Ostatní řádky odpovídají příkladům na obr. 10–44 zadání.</p>
+</section>
+
+<section>
+  <h2>Kolik přinese další díl</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Akce</th><th class="n">Bodů navíc</th></tr></thead>
+    <tbody>
+      <tr><td>Další díl jen nahrnout do žlutého</td><td class="pts">+1</td></tr>
+      <tr><td>Připojit díl k řadě dlouhé <i>n</i> (rovně)</td><td class="pts">+(2n + 1)</td></tr>
+      <tr><td>… k řadě 3 → 4 / 7 → 8 / 15 → 16</td><td class="pts">+7 / +15 / +31</td></tr>
+      <tr><td>Připojit kolmo místo rovně</td><td class="pts">+1</td></tr>
+      <tr><td>Uzavřít 4 díly ze tvaru „U“ (19 b.) do čtverce</td><td class="pts">+21</td></tr>
+      <tr><td>Uzavřít 8 dílů (3 rohy, 67 b.) do obdélníku</td><td class="pts">+41</td></tr>
+      <tr><td>Uzavřít 16 dílů (3 rohy, 259 b.) do obrazce</td><td class="pts">+81</td></tr>
+      <tr><td>Spojit dvě řady po 8 do jedné řady 16</td><td class="pts">+128</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><p><b>Co z toho plyne:</b> body rostou s druhou mocninou délky, takže jedna dlouhá řada vždy porazí několik krátkých (8 v řadě = 64, ale 2 × 4 v řadě = 32). Uzavření do obrazce je nejlevnější bonus, protože stačí jeden spoj navíc. Rozbitá barva uprostřed řady řadu rozdělí na dvě a body klesnou zhruba na polovinu, proto se vyplatí díly správně otáčet. Ve 2. kole mohou být díly na hřišti otočené o 180°, robot tedy musí barvu poznat, ne se ji naučit nazpaměť.</p></div>
+</section>
+
+<section>
+  <h2>Kdy body ztratíte</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Situace</th><th>Důsledek</th></tr></thead>
+    <tbody>
+      <tr><td>Díl se dotýká žluté čáry nebo z obdélníku přečnívá</td><td>Jen 1 bod (P1), nepočítá se do řady ani obrazce</td></tr>
+      <tr><td>Díl obrácený (černou nahoru) nebo položený na jiném dílu</td><td>Jen 1 bod (P1)</td></tr>
+      <tr><td>Dva díly vedle sebe dlouhými stranami</td><td>Není to posloupnost, každý jen 1 bod</td></tr>
+      <tr><td>Díl skončí na soupeřově polovině</td><td>Díl odebrán, v jízdě už se nepoužije</td></tr>
+      <tr><td>Robot zasáhne k soupeři a dotkne se jeho robota</td><td>Diskvalifikace v jízdě, 0 bodů</td></tr>
+      <tr><td>Opuštění hřiště, dotyk stolu, zaseknutí, konec 90 s</td><td>Jízda končí, platí dosavadní body</td></tr>
+      <tr><td>Ovládání po startu (Bluetooth, hlas, wifi zapnutá)</td><td>Diskvalifikace v jízdě</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><p><b>Postup do 2. kola:</b> 3 jízdy, sčítají se. Postupuje 16 nejlepších, ale jen s aspoň <b>24 body</b> v součtu (průměr 8 na jízdu, stačí třeba trojice dílů do „U“ v každé jízdě). Při rovnosti bodů v souboji rozhoduje delší správná řada, pak větší uzavřený obrazec, pak víc kolmých dílů v obrazci, nakonec rychlost.</p></div>
+</section>
+
+
+<p class="src">Zdroj: <a href="https://robosoutez.fel.cvut.cz/zadani-soutezni-ulohy-domino-0" target="_blank" rel="noopener">Zadání soutěžní úlohy „Domino“, robosoutez.fel.cvut.cz</a> (stav k 21. 10. 2026). Simulátor je pomůcka; při sporu platí oficiální zadání a měření rozhodčího.</p>
+
+      <div class="note"><p><b>Hřiště podle plánku ze zadání.</b> Rozměry, černé čáry, žlutý obdélník i výchozí místa a barvy 16 dílů odpovídají levému hřišti z obr. 1. Polohu žlutého obdélníku jsem odměřil z plánku (±5 mm), lze ji upravit v Nastavení.</p></div>
+      <p class="src">RoboSoutěž 2026 · verze 1.0.0 · 21. 10. 2026</p>
+    </div>
+    <div class="view wrap" id="v-simulace" data-view="simulace" hidden>
+      
+      <section class="sim">
+  <div class="scorebar"><div><div class="eyebrow">Skóre rozložení</div><strong id="total">0</strong> <small>bodů</small></div><div class="tool"><small>Ve žlutém <b id="placed">0</b> / 16</small><button id="fs" class="btn2" type="button" aria-pressed="false">Celá obrazovka</button></div></div>
+  <div class="boardwrap">
+    <svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hrací pole s domino díly">
+      <defs><pattern id="studs" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="2.5" fill="rgba(255,255,255,.22)" stroke="rgba(0,0,0,.18)" stroke-width=".6"/></pattern></defs>
+      <g id="world"><g id="boardbg"></g><g id="pieces"></g><g id="overlay" pointer-events="none"></g></g>
+    </svg>
+    <div class="hint" id="hint">Táhněte prstem · dvojklepnutí otočí o 90° · dvěma prsty zoom</div>
+    <div class="zoom"><button id="zin" class="btn2" type="button" aria-label="Přiblížit">+</button><button id="zout" class="btn2" type="button" aria-label="Oddálit">−</button><button id="zfit" class="btn2" type="button">Celé</button></div>
+  </div>
+  <ul class="legend nofull">
+    <li><i class="dot-ok"></i>spoj se správnou barvou</li>
+    <li><i class="dot-bad"></i>spoj s chybnou barvou v obrazci</li>
+    <li><i class="dot-free"></i>možný spoj, nevyužitý</li>
+    <li><i class="dot-p1"></i>díl jen za 1 bod</li>
+  </ul>
+  <ul id="glist" class="nofull"></ul>
+
+  <div class="panel selpanel" aria-live="polite">
+    <p id="selhint" class="src m0">Díl posunete tažením prstu, dvojklepnutím ho otočíte o 90°. Tažením prázdné plochy posunete pohled, dvěma prsty přiblížíte.</p>
+    <div id="selbox" class="selbox" hidden>
+      <div class="selhead"><b id="selname"></b><span id="selstate"></span><span id="selpos"></span></div>
+      <div class="tool">
+        <button id="rl" type="button" aria-label="Otočit o 90° doleva">⟲ 90°</button>
+        <button id="rr" type="button" aria-label="Otočit o 90° doprava">⟳ 90°</button>
+        <button id="r180" type="button">Otočit o 180°</button>
+        <button id="rl2" type="button" aria-label="Pootočit o 2° doleva">−2°</button>
+        <button id="rr2" type="button" aria-label="Pootočit o 2° doprava">+2°</button>
+        <button id="flip" type="button" aria-pressed="false">Černou nahoru</button>
+        <button id="back" type="button">Na výchozí místo</button>
+      </div>
+      <div class="tool"><span class="sw"><span class="src">Polovina A</span><span id="swA" class="sw"></span></span><span class="sw"><span class="src">Polovina B</span><span id="swB" class="sw"></span></span></div>
+    </div>
+  </div>
+
+  <div class="panel traypanel">
+    <div class="selhead nofull"><b>Díly</b><span>klepnutím díl vyberete; díl mimo žluté se do něj přesune</span></div>
+    <div id="tray"></div>
+    <div class="tool nofull"><button id="allin" type="button">Všechny do žlutého</button><button id="clear" type="button">Všechny na start</button></div>
+  </div>
+
+
+
+
+
+  <details class="panel nofull">
+    <summary>Nastavení</summary>
+    <div class="settings">
+      <label for="yx">Žluté od levé stěny (mm)<input id="yx" type="number" min="0" step="10"></label>
+      <label for="yy">Žluté od horní stěny (mm)<input id="yy" type="number" min="0" step="10"></label>
+      <label for="yw">Šířka žlutého (mm)<input id="yw" type="number" min="200" step="10"></label>
+      <label for="yh">Výška žlutého (mm)<input id="yh" type="number" min="200" step="10"></label>
+      <label for="yt">Tloušťka čáry (mm)<input id="yt" type="number" min="1" step="1"></label>
+      <label class="chk" for="grid"><input id="grid" type="checkbox"> Přichytávat k mřížce 4 mm</label>
+      <button id="resetcol" class="btn2" type="button">Vrátit výchozí barvy</button>
+    </div>
+    <p class="src m0">Díl: 96 × 32 mm, dvě poloviny po 48 mm. Kolmý spoj je modelovaný jako „L“: čelo jednoho dílu u boku konce druhého; barvou spoje je polovina na tom konci.</p>
+  </details>
+</section>
+    </div>
+    <div class="view wrap" id="v-navrhy" data-view="navrhy" hidden>
+      <header><div class="eyebrow">Návrhy rozložení</div><h1>Návrhy</h1><p class="lead">Klepnutím na návrh ho rozložíte v simulaci a můžete s ním dál hýbat.</p></header>
+      <section class="sim-like">
+  <div class="panel nofull">
+    <div class="selhead"><b>Stavba ze 4 modulů z vašich dílů</b><span>díly 1–16 ze startu, každá strana hřiště je jeden modul; barvy všech spojů sedí → 340 b.</span></div>
+    <div class="vars" id="modules"></div>
+  </div>
+  <div class="panel nofull">
+    <div class="selhead"><b>Varianty: od 160 bodů, dotek čáry, sklon, chybná barva</b><span>klepnutím rozložíte na hřišti; použité díly se přebarví tak, aby spoje odpovídaly variantě</span></div>
+    <div class="vars" id="variants"></div>
+  </div>
+      </section>
+    </div>
+  </main>
+  <nav class="tabbar" aria-label="Sekce aplikace">
+    <button type="button" data-go="pravidla"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z M9 9h6 M9 13h6 M9 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Pravidla</span></button>
+    <button type="button" data-go="simulace"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="7" y="9" width="6" height="3" fill="currentColor"/><rect x="13" y="12" width="3" height="5" fill="currentColor"/></svg><span>Simulace</span></button>
+    <button type="button" data-go="navrhy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Návrhy</span></button>
+  </nav>
+</div>
+
+</body>
+</html>
