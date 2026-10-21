@@ -4,6 +4,7 @@ Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
 ## 1.3.2 – 2026-10-21
 - Úvod: větší obrázek hřiště, text a tlačítko pod ním.
+- Simulace: výchozí rozložení je obrazec 16 ze 4 stejných modulů (348 b.); verze dat 2 ho jednorázově nastaví i dosavadním uživatelům.
 - Návrhy: v náhledech kroků jen značky už rozložených modulů.
 - Simulace: dříve uložená vlastní poloha žlutého obdélníku a vypnutá mřížka se už nepoužijí (Nastavení bylo zrušeno).
 

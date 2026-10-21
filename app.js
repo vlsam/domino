@@ -335,7 +335,7 @@ function variantLayout(v, Y, START, baseColors) {
     ['B','B'],['G','B'],['G','G'],['B','G'],   // 9–12 dole zprava (horní / dolní polovina)
     ['B','R'],['R','G'],['G','Y'],['Y','Y'],   // 13–16 vlevo zdola (levá / pravá polovina)
   ];
-  const M = 30, KEY = 'robosoutez-2026-data', DATA_VERSION = 1;
+  const M = 30, KEY = 'robosoutez-2026-data', DATA_VERSION = 2;
   // Hrací pole (polovina soutěžní plochy) podle plánku, mm od levého horního vnitřního rohu
   const FIELD = { w: 1680, h: 1249 };
   const RX0 = 280, RX1 = 1400, RY0 = 280, RY1 = 980;      // černý obdélník
@@ -353,10 +353,12 @@ function variantLayout(v, Y, START, baseColors) {
   let rot = false;
 
   let Y = { x: 420, y: 400, w: 840, h: 440, t: 20 };
-  let pieces = DEF_COLORS.map((c, i) => ({ id: i, c: [...c], ...START[i], flip: false, placed: true }));
+  // Výchozí rozložení: obrazec 16 ze 4 stejných modulů (348 b.)
+  let pieces = variantLayout(VARIANTS.find(v => v.id === 'vase16'), Y, START, DEF_COLORS);
   let sel = -1, grid = true, view = null, result = null;
 
   try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.dataVersion === DATA_VERSION && s.pieces && s.pieces.length === 16) { pieces = s.pieces; } } catch (e) {}
+  // Migrace dat 1 → 2: starší uložené rozložení se nepřebírá, jednorázově se nastaví výchozí (348 b.); dál se rozložení uživatele zachovává.
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ dataVersion: DATA_VERSION, pieces, Y, grid })); } catch (e) {} };
 
   const fitView = () => {
