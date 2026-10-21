@@ -132,8 +132,8 @@ button:disabled{opacity:.4;cursor:default}
 
 /* Úvodní obrazovka */
 .intro{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#16171a;color:#f3f2ee;padding-block:24px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));text-align:center;position:relative}
-.intro-in{display:grid;gap:14px;justify-items:center;max-width:520px}
-.intro-art{width:min(58vw,240px);height:auto;max-height:42vh;object-fit:contain;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.intro-in{display:grid;gap:12px;justify-items:center;max-width:520px;padding-bottom:28px}
+.intro-art{width:min(88vw,440px);height:auto;max-height:50vh;object-fit:contain;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
 .intro-eyebrow{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#a9abb1}
 .intro-title{font:800 clamp(40px,11vw,68px)/1 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
 .intro-title span{color:#f4d21a}

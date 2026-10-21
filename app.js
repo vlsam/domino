@@ -356,7 +356,7 @@ function variantLayout(v, Y, START, baseColors) {
   let pieces = DEF_COLORS.map((c, i) => ({ id: i, c: [...c], ...START[i], flip: false, placed: true }));
   let sel = -1, grid = true, view = null, result = null;
 
-  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.dataVersion === DATA_VERSION && s.pieces && s.pieces.length === 16) { pieces = s.pieces; Y = s.Y || Y; grid = s.grid !== false; } } catch (e) {}
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.dataVersion === DATA_VERSION && s.pieces && s.pieces.length === 16) { pieces = s.pieces; } } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ dataVersion: DATA_VERSION, pieces, Y, grid })); } catch (e) {} };
 
   const fitView = () => {
