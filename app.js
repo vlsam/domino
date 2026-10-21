@@ -468,7 +468,7 @@ function variantLayout(v, Y, START, baseColors) {
     big.forEach(g => line(g.kind === 'chain' ? `Řada ${g.n}` : g.kind === 'loop' ? `Obrazec ${g.n}` : `Obrazec ${g.n} (chybná barva)`, calcText(g), g.score, g.kind));
     if (singles) line(singles === 1 ? 'Díl' : 'Díly', `${singles} × 1`, singles);
     if (p1.length) line('Jen 1 b. (čára, obrácený, mimo spoj)', `${p1.length} × 1`, p1.length, 'p1');
-    if (!ol.children.length) line('Díl ve žlutém', '1 b. za kus', 0);
+    if (!ol.children.length) { const li = document.createElement('li'); li.textContent = 'Ve žlutém zatím nic není: 0 b.'; ol.appendChild(li); }
   }
 
 
