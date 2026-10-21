@@ -17,7 +17,9 @@
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="app.css">
+<script src="version.js" defer></script>
 <script src="app.js" defer></script>
+<script src="install.js" defer></script>
 </head>
 <body>
 
@@ -38,14 +40,16 @@
     <h1 class="intro-title">RoboSoutěž <span>2026</span></h1>
     <p class="intro-sub">Pravidla, simulace bodování a návrhy rozložení</p>
     <button id="enter" class="intro-btn" type="button">Vstoupit</button>
+    <button id="installBtn" class="intro-install" type="button" hidden>Přidat na plochu</button>
+    <p id="iosHint" class="intro-hint" hidden>Na iPhonu: klepněte na Sdílet a pak na „Přidat na plochu“.</p>
   </div>
-  <div class="intro-ver">verze 1.0.0 · 21. 10. 2026</div>
+  <div class="intro-ver" id="verze"></div>
 </div>
 
 <div id="app" class="app" hidden>
   <header class="appbar">
     <button id="home" class="appbrand" type="button" aria-label="Zpět na úvod"><b>RoboSoutěž 2026</b><span>Domino</span></button>
-    <span class="appver">v1.0.0</span>
+    <span class="appver" id="appver"></span>
   </header>
   <main class="views">
     <div class="view wrap" id="v-pravidla" data-view="pravidla" hidden>
@@ -135,7 +139,7 @@
 <p class="src">Zdroj: <a href="https://robosoutez.fel.cvut.cz/zadani-soutezni-ulohy-domino-0" target="_blank" rel="noopener">Zadání soutěžní úlohy „Domino“, robosoutez.fel.cvut.cz</a> (stav k 21. 10. 2026). Simulátor je pomůcka; při sporu platí oficiální zadání a měření rozhodčího.</p>
 
       <div class="note"><p><b>Hřiště podle plánku ze zadání.</b> Rozměry, černé čáry, žlutý obdélník i výchozí místa a barvy 16 dílů odpovídají levému hřišti z obr. 1. Polohu žlutého obdélníku jsem odměřil z plánku (±5 mm), lze ji upravit v Nastavení.</p></div>
-      <p class="src">RoboSoutěž 2026 · verze 1.0.0 · 21. 10. 2026</p>
+      <p class="src" id="verze2"></p>
     </div>
     <div class="view wrap" id="v-simulace" data-view="simulace" hidden>
       

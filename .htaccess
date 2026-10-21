@@ -5,7 +5,7 @@
   Header always set Referrer-Policy "no-referrer"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header always set Strict-Transport-Security "max-age=31536000"
-  <FilesMatch "^(sw\.js|index\.html|manifest\.webmanifest)$">
+  <FilesMatch "^(sw\.js|version\.js|index\.html|manifest\.webmanifest)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
   <FilesMatch "\.(css|js|png)$">

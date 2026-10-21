@@ -1,0 +1,14 @@
+# Přístupy a tajné údaje – nikdy do gitu
+pristupy/*.env
+.env
+.env.*
+!*.example
+*.local
+
+# Dumpy databáze s ostrými daty
+*.sql
+!migrations/*.sql
+
+# Ostatní
+node_modules/
+.DS_Store

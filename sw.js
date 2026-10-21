@@ -1,21 +1,35 @@
-'use strict';
-// Offline cache: aplikace funguje i bez připojení. Při změně souborů zvyšte VERSION.
-const VERSION = 'robosoutez-1.0.0';
-const ASSETS = ['./', 'index.html', 'app.css', 'app.js', 'manifest.webmanifest',
-  'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png'];
+// Service worker. Verze se bere z version.js (jediný zdroj).
+importScripts("version.js");
 
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+const CACHE = "robosoutez-" + APP_VERSION;
+const PRECACHE = ["./", "index.html", "install.js", "version.js", "manifest.webmanifest", "app.js", "app.css",
+  "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png"];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
+  self.skipWaiting();
 });
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
-    .then(() => self.clients.claim()));
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
 });
-self.addEventListener('fetch', e => {
-  const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(res => {
-    if (res.ok && res.type === 'basic') { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
-    return res;
-  }).catch(() => caches.match('index.html'))));
+
+// Ze sítě, při výpadku z cache.
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  event.respondWith(
+    fetch(req)
+      .then((res) => {
+        if (!res.ok) return res;
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(req, copy));
+        return res;
+      })
+      .catch(() => caches.match(req).then((hit) => hit || caches.match("index.html")))
+  );
 });

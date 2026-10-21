@@ -1,0 +1,5 @@
+# Do testovacího kontejneru nepatří přístupy ani git
+pristupy/
+.git/
+*.env
+CAS.csv

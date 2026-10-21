@@ -1,25 +1,32 @@
-# RoboSoutěž 2026 (PWA)
+# Šablona pravidel pro projekty
 
-Verze 1.0.0 · 21. 10. 2026. Úvodní obrazovka → sekce Pravidla, Simulace, Návrhy.
+Tuto složku zkopíruj do nového projektu (obsah složky `pravidla/` do kořene projektu).
 
-Statická webová aplikace, žádný server ani databáze. Data (rozložení dílů) zůstávají jen v prohlížeči zařízení.
+## Postup u nového projektu
 
-## Nasazení
-1. Nahrajte obsah složky do libovolného adresáře na webu s **HTTPS** (bez HTTPS se PWA nenainstaluje).
-   Vhodná je vlastní subdoména, např. `domino.vasedomena.cz`.
-2. Apache: soubor `.htaccess` nastaví bezpečnostní hlavičky a cache.
-   Nginx: přidejte stejné hlavičky (Content-Security-Policy, X-Content-Type-Options, Referrer-Policy)
-   a pro `sw.js`, `index.html` a `manifest.webmanifest` nastavte `Cache-Control: no-cache`.
-3. Otevřete adresu v mobilu:
-   - Android / Chrome: menu ⋮ → **Instalovat aplikaci** (nebo „Přidat na plochu“).
-   - iPhone / Safari: Sdílet → **Přidat na plochu**.
+1. Zkopíruj obsah této složky do kořene projektu.
+2. Zkopíruj `sablony/pristupy/*.example` do `pristupy/` a přejmenuj bez `.example`
+   (`ftp.env.example` → `ftp.env`, `db.env.example` → `db.env`). Vyplň jen to, co projekt potřebuje.
+3. Pokud je projekt PWA, zkopíruj soubory ze `sablony/pwa/` do projektu.
+4. Pokud testuješ v Dockeru, zkopíruj `sablony/docker/` do kořene projektu.
+5. Zkontroluj, že `.gitignore` vylučuje `pristupy/*.env`.
+6. Smaž sekce a soubory, které projekt nepotřebuje (např. `databaze.md` bez databáze).
 
-Lze použít i zdarma GitHub Pages, Netlify nebo Cloudflare Pages (u nich `.htaccess` neplatí, CSP je i v `index.html`).
+## Struktura
 
-## Aktualizace
-Po změně souborů zvyšte `VERSION` v `sw.js` (např. `robosoutez-1.0.1`) a číslo verze v `index.html`, jinak zařízení drží starou verzi z cache.
-
-## Bezpečnost a rychlost
-- Žádné externí skripty, písma ani sledování; vše se načítá z vlastní domény.
-- Přísná CSP (jen vlastní původ, žádné inline skripty a styly).
-- Po první návštěvě běží offline z cache service workeru.
+```
+CLAUDE.md                 jádro, čte každý agent
+STAV.md                   stav práce, předávání mezi agenty a dny
+CHANGELOG.md              historie verzí
+version.js                jediný zdroj čísla verze a data
+cas.ps1                   měření času (start / stop / souhrn)
+dashboard.ps1, .html      živý přehled agentů z CAS.csv (http://localhost:8765/)
+CAS.csv                   vzniká automaticky při prvním startu
+.gitignore
+pristupy/                 FTP a databáze (jen lokálně, mimo git)
+  README.md
+  ftp.env                 (vytvoříš ty)
+  db.env                  (vytvoříš ty)
+docs/rules/               pravidla po rolích
+sablony/                  hotové šablony (pwa, docker, pristupy)
+```
