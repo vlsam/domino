@@ -23,9 +23,15 @@ na který navazují sekce Pravidla a Návrhy). Rozdělení by vedlo ke společn�
 - Sekce Pravidla, Simulace, Návrhy se spodní navigací.
 - Service worker podle `sablony/pwa/sw.js`: cache s číslem verze, `skipWaiting` + `clients.claim`, ze sítě a při výpadku z cache.
 - Data simulace v localStorage pod pevným klíčem `robosoutez-2026-data` s číslem verze dat (`dataVersion`).
+- Oprava po testech: SW se registruje s `updateViaCache: "none"`, síťové požadavky v SW s `cache: "no-cache"`,
+  `.htaccess` dává `no-cache` pro html/js/css/manifest. Testovací agent ověřil: nová verze hned po 1. obnovení, data zůstala (23/23).
 
 ## Zbývá
-- Push na GitHub: zatím odmítnut (Claude nemá zápis do `vlsam/domino`), viz otázky.
+- Push na GitHub: z Claude odmítnut (chyba 403, Claude nemá zápis do `vlsam/domino`). Na GitHubu je zatím jen `index.html`
+  nahraný přes web, takže https://vlsam.github.io/domino/ nemá styly ani skripty. Je potřeba nahrát celou složku.
+- Zopakovat Docker test na skutečném `nginx:alpine` (v sandboxu Docker Hub blokovaný, testováno na náhradním nginx).
+- Ověřit ručně v telefonu: tlačítko „Přidat na plochu“ (Android) a návod pro iOS (headless prohlížeč to neumí).
+- Na web se nahrávají i `STAV.md`, `CLAUDE.md`, `docs/`, `sablony/`, `cas.ps1`, `dashboard.*` (bez hesel). Rozhodnout, zda nevadí.
 - Nasazení (GitHub Pages nebo FTP): jen na pokyn uživatele; `pristupy/ftp.env` neexistuje.
 - Polohu žlutého obdélníku (odměřeno z plánku ±5 mm) a tloušťku žluté čáry (odhad 20 mm) ověřit na skutečném hřišti.
 
@@ -53,5 +59,8 @@ Test 2026-10-21, verze 1.0.0, Docker + Playwright (headless Chromium) proti `htt
 - **Nález v `.htaccess` (Apache, netestováno):** blok `\.(css|js|png)$` s `max-age=604800` stojí za blokem s `no-cache`, a tak
   `version.js` (a `install.js`, `app.js`) dostane cache na týden. Aktualizace by na produkci mohla být vidět až po týdnu. Řeší koordinátor.
 - **Nešlo ověřit:** `beforeinstallprompt` se v headless Chromium nespustil, `#installBtn` existuje, ale je skrytý. Instalace a návod pro iOS nebyly ověřeny.
+- **Opakovaný test po opravě (2026-10-21, `updateViaCache: "none"`, `fetch` s `cache: "no-cache"`, nové `.htaccess`): 23/23 prošlo.**
+  1.0.1 je vidět hned po 1. obnovení (bez čekání), cache jen `robosoutez-1.0.1`, data `robosoutez-2026-data` beze změny (skóre 340).
+  Prošly i body 1, 3, 4, 6, 7. Stále na náhradním základním obrazu, `.htaccess` na Apache neověřen (jen čtením).
 - Poznámka: do kontejneru (a na web) se kopírují i `STAV.md`, `CLAUDE.md`, `docs/`, `sablony/`, `cas.ps1`, `dashboard.*` (žádná hesla, ale nejsou potřeba).
 ### Release agent
