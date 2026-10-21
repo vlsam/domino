@@ -596,9 +596,9 @@ function variantLayout(v, Y, START, baseColors) {
     let h = '';
     for (let m = 0; m < 4; m++) {
       const grp = list.slice(m * 4, m * 4 + 4); if (grp.length < 4) break;
-      for (const p of grp) h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-46" y="-14" width="92" height="28" fill="none" stroke="${MOD_COL[m]}" stroke-width="6"/></g>`;
+      for (const p of grp) h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-47" y="-15" width="94" height="30" fill="none" stroke="${MOD_COL[m]}" stroke-width="2" stroke-opacity=".85"/></g>`;
       const cx = grp.reduce((a, p) => a + p.x, 0) / 4, cy = grp.reduce((a, p) => a + p.y, 0) / 4;
-      h += `<circle cx="${cx}" cy="${cy}" r="26" fill="${MOD_COL[m]}"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-size="32" font-weight="700" fill="#fff">${'ABCD'[m]}</text>`;
+      h += `<circle cx="${cx}" cy="${cy}" r="17" fill="${MOD_COL[m]}" fill-opacity=".9"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="700" fill="#fff">${'ABCD'[m]}</text>`;
     }
     return h;
   }
