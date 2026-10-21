@@ -45,6 +45,6 @@
       reloaded = true;
       location.reload();
     });
-    navigator.serviceWorker.register("sw.js").then((reg) => reg.update());
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((reg) => reg.update());
   }
 })();

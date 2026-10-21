@@ -40,4 +40,18 @@ na který navazují sekce Pravidla a Návrhy). Rozdělení by vedlo ke společn�
 ### DB agent
 - Projekt databázi nepoužívá.
 ### Testovací agent
+Test 2026-10-21, verze 1.0.0, Docker + Playwright (headless Chromium) proti `http://localhost:8080`.
+- **Omezení prostředí:** Docker Hub (i mirrory gcr/ecr/ghcr/quay) je pro sandbox zakázaný, `nginx:alpine` nešlo stáhnout.
+  Jako náhradu jsem lokálně sestavil základní obraz se značkou `nginx:alpine` (nginx 1.24 z Ubuntu + busybox, výchozí konfigurace
+  bez hlaviček Cache-Control). `Dockerfile` a `docker-compose.yml` jsou beze změny. Na skutečném `nginx:alpine` je potřeba test zopakovat.
+- **Prošlo (21/23 v prvním běhu):** úvod (nadpis, Vstoupit, „verze 1.0.0 · 21. 10. 2026“), spodní lišta Pravidla/Simulace/Návrhy, „v1.0.0“
+  v horní liště, karta „Krok 4: modul D“ → Simulace, `#total` = 340, SW `ready`, cache `robosoutez-1.0.0`, offline se ukáže úvod i Simulace (340),
+  konzole bez chyb (CSP, JS), v kontejneru není `pristupy/`, `.git/`, `*.env` ani `CAS.csv`.
+- **Neprošlo napoprvé: aktualizace.** Po `sed` na 1.0.1 v kontejneru byla i po 3 obnoveních vidět 1.0.0 a cache `robosoutez-1.0.0`.
+  Při opakování se 1.0.1 ukázala až asi po 45 s (3. obnovení), stará cache zmizela, data v `robosoutez-2026-data` zůstala.
+  Příčina: `version.js` nemá Cache-Control, takže ho prohlížeč (i v `importScripts` ve SW) bere z HTTP cache podle heuristiky (Last-Modified).
+- **Nález v `.htaccess` (Apache, netestováno):** blok `\.(css|js|png)$` s `max-age=604800` stojí za blokem s `no-cache`, a tak
+  `version.js` (a `install.js`, `app.js`) dostane cache na týden. Aktualizace by na produkci mohla být vidět až po týdnu. Řeší koordinátor.
+- **Nešlo ověřit:** `beforeinstallprompt` se v headless Chromium nespustil, `#installBtn` existuje, ale je skrytý. Instalace a návod pro iOS nebyly ověřeny.
+- Poznámka: do kontejneru (a na web) se kopírují i `STAV.md`, `CLAUDE.md`, `docs/`, `sablony/`, `cas.ps1`, `dashboard.*` (žádná hesla, ale nejsou potřeba).
 ### Release agent

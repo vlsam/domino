@@ -5,14 +5,12 @@
   Header always set Referrer-Policy "no-referrer"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header always set Strict-Transport-Security "max-age=31536000"
-  <FilesMatch "^(sw\.js|version\.js|index\.html|manifest\.webmanifest)$">
+  # HTML, skripty, styly a manifest: vždy ověřit u serveru (aktualizace hned po vydání)
+  <FilesMatch "\.(html|js|css|webmanifest)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
-  <FilesMatch "\.(css|js|png)$">
+  <FilesMatch "\.png$">
     Header set Cache-Control "public, max-age=604800"
-  </FilesMatch>
-  <FilesMatch "^sw\.js$">
-    Header set Cache-Control "no-cache"
   </FilesMatch>
 </IfModule>
 AddType application/manifest+json .webmanifest
