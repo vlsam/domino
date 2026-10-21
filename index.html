@@ -152,7 +152,6 @@
       <g id="world"><g id="boardbg"></g><g id="pieces"></g><g id="overlay" pointer-events="none"></g></g>
     </svg>
     <div class="hint" id="hint">Táhněte prstem · dvojklepnutí otočí o 90° · dvěma prsty zoom</div>
-    <div class="zoom"><button id="zin" class="btn2" type="button" aria-label="Přiblížit">+</button><button id="zout" class="btn2" type="button" aria-label="Oddálit">−</button><button id="zfit" class="btn2" type="button">Celé</button></div>
   </div>
   <ul class="legend nofull">
     <li><i class="dot-ok"></i>spoj se správnou barvou</li>
@@ -162,27 +161,10 @@
   </ul>
   <ul id="glist" class="nofull"></ul>
 
-  <div class="panel selpanel" aria-live="polite">
-    <p id="selhint" class="src m0">Díl posunete tažením prstu, dvojklepnutím ho otočíte o 90°. Tažením prázdné plochy posunete pohled, dvěma prsty přiblížíte.</p>
-    <div id="selbox" class="selbox" hidden>
-      <div class="selhead"><b id="selname"></b><span id="selstate"></span><span id="selpos"></span></div>
-      <div class="tool">
-        <button id="rl" type="button" aria-label="Otočit o 90° doleva">⟲ 90°</button>
-        <button id="rr" type="button" aria-label="Otočit o 90° doprava">⟳ 90°</button>
-        <button id="r180" type="button">Otočit o 180°</button>
-        <button id="rl2" type="button" aria-label="Pootočit o 2° doleva">−2°</button>
-        <button id="rr2" type="button" aria-label="Pootočit o 2° doprava">+2°</button>
-        <button id="flip" type="button" aria-pressed="false">Černou nahoru</button>
-        <button id="back" type="button">Na výchozí místo</button>
-      </div>
-      <div class="tool"><span class="sw"><span class="src">Polovina A</span><span id="swA" class="sw"></span></span><span class="sw"><span class="src">Polovina B</span><span id="swB" class="sw"></span></span></div>
-    </div>
-  </div>
 
-  <div class="panel traypanel">
-    <div class="selhead nofull"><b>Díly</b><span>klepnutím díl vyberete; díl mimo žluté se do něj přesune</span></div>
-    <div id="tray"></div>
-    <div class="tool nofull"><button id="allin" type="button">Všechny do žlutého</button><button id="clear" type="button">Všechny na start</button></div>
+  <div class="actions">
+    <button id="allin" type="button">Všechny do žlutého</button>
+    <button id="clear" type="button">Všechny na start</button>
   </div>
 
 

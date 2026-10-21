@@ -4,6 +4,8 @@ Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
 ## 1.2.0 – 2026-10-21
 - Kontrola verze při spuštění a při návratu do aplikace: dokud neproběhne, nejde vstoupit; novější verze se hned načte.
+- Simulace se otevírá rovnou přes celou obrazovku; zrušena tlačítka +/−/Celé a panely vybraného dílu a seznamu dílů,
+  zůstala tlačítka „Všechny do žlutého“ a „Všechny na start“ na celou šířku.
 - Návrhy: obrazec 16 ze 4 stejných modulů (12 kolmých spojů, 348 b.) z vlastních dílů, moduly A–D zvýrazněné v náhledu.
 
 ## 1.1.0 – 2026-10-21

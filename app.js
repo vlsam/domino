@@ -328,7 +328,6 @@ function variantLayout(v, Y, START, baseColors) {
 // UI simulátoru
 (function () {
   const HEX = { R: '#d23a2e', Y: '#f3c11c', B: '#2a5bc4', G: '#2f9a4f', K: '#1e1f22' };
-  const CNAME = { R: 'červená', Y: 'žlutá', B: 'modrá', G: 'zelená' };
   // Barvy podle obr. 1 zadání (levé hřiště). Pořadí: [horní/levá polovina, dolní/pravá polovina] v pohledu plánku.
   const DEF_COLORS = [
     ['Y','G'],['G','R'],['R','Y'],['Y','B'],   // 1–4 nahoře zleva (horní / dolní polovina)
@@ -437,7 +436,7 @@ function variantLayout(v, Y, START, baseColors) {
       if (!u) { el('circle', { cx: e.pt[0], cy: e.pt[1], r: 5, fill: '#fff', stroke: '#8a8b85', 'stroke-width': 2 }, gOv); return; }
       el('circle', { cx: e.pt[0], cy: e.pt[1], r: 8, fill: e.ok ? '#1f9d55' : '#d23a2e', stroke: '#fff', 'stroke-width': 2.5 }, gOv);
     });
-    renderScore(); renderTray(); renderSel(); save();
+    renderScore(); save();
   }
 
   const KIND = { loop: 'Uzavřený obrazec', loopbad: 'Obrazec s chybnou barvou', chain: 'Řada' };
@@ -454,34 +453,10 @@ function variantLayout(v, Y, START, baseColors) {
       const why = {}; p1.forEach(i => { const w = result.st[i].why; (why[w] = why[w] || []).push(i + 1); });
       add(`Jen základní bod (${Object.entries(why).map(([w, a]) => w + ': č. ' + a.join(', ')).join('; ')})`, `${p1.length} × 1`, p1.length, 'p1');
     }
-    if (!list.children.length) add('Ve žlutém obdélníku zatím nic není', 'přetáhněte díly nebo klepněte na díl v seznamu', 0);
+    if (!list.children.length) add('Ve žlutém obdélníku zatím nic není', 'přetáhněte díly prstem do žlutého obdélníku', 0);
     $('placed').textContent = result.st.filter(x => x.p1).length;
   }
 
-  function chipSvg(p) { return `<svg viewBox="-50 -18 100 36" aria-hidden="true"><rect x="-48" y="-16" width="48" height="32" fill="${p.flip ? HEX.K : HEX[p.c[0]]}"/><rect x="0" y="-16" width="48" height="32" fill="${p.flip ? HEX.K : HEX[p.c[1]]}"/><line x1="0" y1="-16" x2="0" y2="16" stroke="rgba(0,0,0,.3)"/></svg>`; }
-  function renderTray() {
-    const t = $('tray'); t.textContent = '';
-    pieces.forEach((p, i) => {
-      const inY = result && result.st[i].p1;
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (inY ? ' on' : '') + (i === sel ? ' sel' : '');
-      b.setAttribute('aria-label', `Díl ${i + 1}: ${CNAME[p.c[0]]} / ${CNAME[p.c[1]]}${inY ? ', ve žlutém' : ''}`);
-      b.innerHTML = `<span class="no">${i + 1}</span>${chipSvg(p)}`;
-      b.addEventListener('click', () => { if (!inY) dropIn(i); sel = i; drawPieces(); doScore(); });
-      t.appendChild(b);
-    });
-  }
-  function renderSel() {
-    const box = $('selbox');
-    box.hidden = false; $('selhint').hidden = true;
-    box.querySelectorAll('button').forEach(bt => bt.disabled = sel < 0);
-    if (sel < 0) { $('selname').textContent = 'Žádný díl nevybrán'; $('selstate').textContent = 'táhněte díl prstem, dvojklepnutím ho otočíte o 90°'; $('selpos').textContent = ''; box.querySelectorAll('[aria-pressed]').forEach(bt => bt.setAttribute('aria-pressed', 'false')); return; }
-    const p = pieces[sel], s = result && result.st[sel];
-    $('selname').textContent = `Díl č. ${sel + 1}`;
-    $('selstate').textContent = !s.p1 ? 'mimo žlutý obdélník (0 b.)' : s.ok ? 'celý uvnitř, může tvořit řadu' : `jen základní bod (${s.why})`;
-    $('selpos').textContent = `x ${Math.round(p.x)} · y ${Math.round(p.y)} mm · ${((p.a % 360) + 360) % 360}°`;
-    ['A', 'B'].forEach((h, k) => document.querySelectorAll(`#sw${h} button`).forEach(b => b.setAttribute('aria-pressed', b.dataset.c === p.c[k])));
-    $('flip').setAttribute('aria-pressed', p.flip);
-  }
 
   function dropIn(i) {
     const p = pieces[i]; p.placed = true; p.a = 0; p.flip = false;
@@ -597,23 +572,7 @@ function variantLayout(v, Y, START, baseColors) {
     const nw = Math.min(Math.max(view.w * f, 220), (FIELD.w + 2 * M) * 1.6); const k = nw / view.w;
     view = { x: c.x - (c.x - view.x) * k, y: c.y - (c.y - view.y) * k, w: nw, h: view.h * k }; applyView();
   }
-  $('zin').onclick = () => zoom(1 / 1.4, sel >= 0 && pieces[sel].placed ? (rot ? { x: -pieces[sel].y, y: pieces[sel].x } : { x: pieces[sel].x, y: pieces[sel].y }) : null);
-  $('zout').onclick = () => zoom(1.4);
-  $('zfit').onclick = () => { view = fitView(); applyView(); };
 
-  // akce s vybraným dílem
-  const act = fn => () => { if (sel < 0) return; fn(pieces[sel]); if (pieces[sel].placed) { const g = gPieces.querySelector(`[data-i="${sel}"]`); if (g) placeNode(g, pieces[sel]); } doScore(); };
-  $('rl').onclick = act(p => p.a = (p.a - 90 + 360) % 360);
-  $('rr').onclick = act(p => p.a = (p.a + 90) % 360);
-  $('rl2').onclick = act(p => p.a = (p.a - 2 + 360) % 360);
-  $('rr2').onclick = act(p => p.a = (p.a + 2) % 360);
-  $('r180').onclick = act(p => p.a = (p.a + 180) % 360);
-  $('flip').onclick = () => { if (sel < 0) return; pieces[sel].flip = !pieces[sel].flip; drawPieces(); doScore(); };
-  $('back').onclick = () => { if (sel < 0) return; Object.assign(pieces[sel], START[sel], { flip: false }); drawPieces(); doScore(); };
-  ['A', 'B'].forEach((h, k) => {
-    const box = $('sw' + h);
-    ['R', 'Y', 'B', 'G'].forEach(c => { const b = document.createElement('button'); b.type = 'button'; b.dataset.c = c; b.style.setProperty('--c', HEX[c]); b.setAttribute('aria-label', `Polovina ${h}: ${CNAME[c]}`); b.onclick = () => { if (sel < 0) return; pieces[sel].c[k] = c; drawPieces(); doScore(); }; box.appendChild(b); });
-  });
 
   // šablony a nastavení
   // Varianty nad 160 bodů s náhledem
@@ -729,7 +688,8 @@ function variantLayout(v, Y, START, baseColors) {
     document.querySelectorAll('.tabbar [data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'page' : 'false'));
     if (push && location.hash !== '#' + name) { try { history.pushState(null, '', '#' + name); } catch (e) {} }
     window.scrollTo(0, 0);
-    if (name === 'simulace') requestAnimationFrame(() => { view = fitView(); applyView(); });
+    if (name === 'simulace') setFull(true);
+    else if (simEl.classList.contains('full')) setFull(false);
   }
   function showIntro(push = true) {
     if (simEl.classList.contains('full')) setFull(false);
