@@ -264,7 +264,7 @@ function tilt(g, deg) {
 // Obrazec 16 ze skutečných dílů: díly 1–16 po řadě (po směru hodin), každá strana hřiště = jeden modul po 4.
 // Obrazec 348 b. tvoří 4 moduly stejného tvaru (2, 3, 4 jsou jen otočený modul 1), 12 kolmých spojů, 416 × 320 mm.
 const FOUR_SAME = 'LSLRRSRLRSRLRSRR';
-const MODULE_SHAPE = 'stejný tvar jako modul 1, jen otočený';
+const MODULE_SHAPE = 'stejný tvar jako modul 1 (otočený nebo posunutý)';
 const MODULES = [
   { key: '1', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
   { key: '2', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
@@ -673,7 +673,7 @@ function variantLayout(v, Y, START, baseColors) {
   }
   function moduleCard(list) {
     const d = document.createElement('div'); d.className = 'modpart';
-    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část (moduly 1–4, díly a–d), každá jen otočená o 90°.</span>`;
+    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Obrazec tvoří 4× tato část (moduly 1–4): modul 3 je posunutý, moduly 2 a 4 otočené o 90°.</span>`;
     return d;
   }
   function renderModules() {
