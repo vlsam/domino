@@ -39,7 +39,8 @@
     <div class="intro-eyebrow">ČVUT FEL · středoškolské týmy · úloha Domino</div>
     <h1 class="intro-title">RoboSoutěž <span>2026</span></h1>
     <p class="intro-sub">Pravidla, simulace bodování a návrhy rozložení</p>
-    <button id="enter" class="intro-btn" type="button">Vstoupit</button>
+    <button id="enter" class="intro-btn" type="button" disabled>Vstoupit</button>
+    <p id="verStatus" class="intro-hint" aria-live="polite">Kontroluji verzi…</p>
     <button id="installBtn" class="intro-install" type="button" hidden>Přidat na plochu</button>
     <p id="iosHint" class="intro-hint" hidden>Na iPhonu: klepněte na Sdílet a pak na „Přidat na plochu“.</p>
   </div>
@@ -207,7 +208,7 @@
       <header><div class="eyebrow">Návrhy rozložení</div><h1>Návrhy</h1><p class="lead">Klepnutím na návrh ho rozložíte v simulaci a můžete s ním dál hýbat.</p></header>
       <section class="sim-like">
   <div class="panel nofull">
-    <div class="selhead"><b>Stavba ze 4 modulů z vašich dílů</b><span>díly 1–16 ze startu, každá strana hřiště je jeden modul; barvy všech spojů sedí → 340 b.</span></div>
+    <div class="selhead"><b>Stavba ze 4 stejných modulů z vašich dílů</b><span>obrazec tvoří 4× stejná část (A, B, C, D – jen otočená); díly 1–16 ze startu, každá strana hřiště je jeden modul, barvy všech spojů sedí → 348 b.</span></div>
     <div class="vars" id="modules"></div>
   </div>
   <div class="panel nofull">

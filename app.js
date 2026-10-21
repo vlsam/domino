@@ -221,7 +221,7 @@ function pack(groups, Y, loose = 0) {
   const out = []; let cx = X0, cy = Y0, rowH = 0;
   for (const g of groups) {
     let poses = g.poses, b = bbox(poses);
-    if (b.w > X1 - X0 && b.h <= X1 - X0) { poses = rot90(poses); b = bbox(poses); }
+    if ((b.w > X1 - X0 && b.h <= X1 - X0) || (b.h > Y1 - Y0 && b.w <= Y1 - Y0)) { poses = rot90(poses); b = bbox(poses); }
     if (cx + b.w > X1 && cx > X0) { cx = X0; cy += rowH + 24; rowH = 0; }
     const ox = Math.round((cx - b.x0) / 4) * 4, oy = Math.round((cy - b.y0) / 4) * 4;
     poses.forEach((p, k) => out.push({ x: p.x + ox, y: p.y + oy, a: p.a, c: [...g.col[k]], flip: false }));
@@ -261,15 +261,18 @@ function tilt(g, deg) {
   const r = deg * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
   return { ...g, poses: g.poses.map(p => ({ x: p.x * c - p.y * s, y: p.x * s + p.y * c, a: ((p.a + deg) % 360 + 360) % 360 })) };
 }
-// Obrazec 16 ze skutečných dílů: díly 1–16 po řadě (po směru hodin), každá strana hřiště = jeden modul po 4
+// Obrazec 16 ze skutečných dílů: díly 1–16 po řadě (po směru hodin), každá strana hřiště = jeden modul po 4.
+// Tvar FOUR_SAME tvoří 4 shodné moduly (stejný tvar, jen otočený), 12 kolmých spojů, 416 × 320 mm.
+const FOUR_SAME = 'LSLRRSRLRSRLRSRR';
+const MODULE_SHAPE = 'stejný tvar jako ostatní moduly (otočený)';
 const MODULES = [
-  { key: 'A', ids: [0, 1, 2, 3], side: 'horní strana', shape: 'rovná řada' },
-  { key: 'B', ids: [4, 5, 6, 7], side: 'pravá strana', shape: 'tvar L (2 díly rovně, 2 kolmo)' },
-  { key: 'C', ids: [8, 9, 10, 11], side: 'dolní strana', shape: 'rovná řada' },
-  { key: 'D', ids: [12, 13, 14, 15], side: 'levá strana', shape: 'tvar L (2 díly rovně, 2 kolmo)' },
+  { key: 'A', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
+  { key: 'B', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
+  { key: 'C', ids: [8, 9, 10, 11], side: 'dolní strana', shape: MODULE_SHAPE },
+  { key: 'D', ids: [12, 13, 14, 15], side: 'levá strana', shape: MODULE_SHAPE },
 ];
-function ownLoop(Y, base, upto = 4) {
-  const poses = pack([G.loop('SSSSSRSRSSSSSRSR'.split(''))], Y);
+function ownLoop(Y, base, upto = 4, steps = FOUR_SAME) {
+  const poses = pack([G.loop(steps.split(''))], Y);
   let need = base[0][0];
   const out = poses.map((q, k) => {
     const c = base[k], rev = c[0] !== need; need = rev ? c[0] : c[1];
@@ -278,7 +281,8 @@ function ownLoop(Y, base, upto = 4) {
   return out.slice(0, upto * 4);
 }
 const VARIANTS = [
-  { id: 'vase16', own: true, name: 'Obrazec 16 z vašich dílů', note: 'Skutečné barvy ze startu: díly 1–16 za sebou, každá strana hřiště je jeden modul. Všechny spoje barevně sedí.', build: (Y, base) => ownLoop(Y, base) },
+  { id: 'vase16', own: true, modules: true, name: 'Obrazec 16 ze 4 stejných modulů', note: 'Vaše skutečné barvy: díly 1–16 za sebou, každá strana hřiště je jeden modul a všechny 4 moduly mají stejný tvar. Všechny spoje barevně sedí.', build: (Y, base) => ownLoop(Y, base) },
+  { id: 'vase16r', own: true, modules: true, name: 'Obdélník 16 z vašich dílů', note: 'Vaše skutečné barvy, 2 typy modulů: rovná řada a tvar L.', build: (Y, base) => ownLoop(Y, base, 4, 'SSSSSRSRSSSSSRSR') },
   { id: 'o16r14', name: 'Obrazec 16, 14 rohů', note: 'Nejvíc kolmých spojů, co se vejde do žlutého.', build: Y => pack([G.loop('SRSRRLLRRLRRLRRL'.split(''))], Y) },
   { id: 'o16r10', name: 'Obrazec 16, 10 rohů', note: 'Obdélník se zuby, jednodušší na stavbu.', build: Y => pack([G.loop('SSSSRSRSRLLRRLRR'.split(''))], Y) },
   { id: 'o16r4', name: 'Obrazec 16, 4 rohy', note: 'Prostý obdélník 6 × 2 díly.', build: Y => pack([G.loop('SSSSSRSRSSSSSRSR'.split(''))], Y) },
@@ -613,7 +617,19 @@ function variantLayout(v, Y, START, baseColors) {
 
   // šablony a nastavení
   // Varianty nad 160 bodů s náhledem
-  function thumb(list) {
+  // Moduly (díly 1–4, 5–8, 9–12, 13–16) zvýrazněné obrysem a písmenem
+  const MOD_COL = ['#111827', '#7c3aed', '#db2777', '#0284c7'];
+  function moduleMarks(list) {
+    let h = '';
+    for (let m = 0; m < 4; m++) {
+      const grp = list.slice(m * 4, m * 4 + 4); if (grp.length < 4) break;
+      for (const p of grp) h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-46" y="-14" width="92" height="28" fill="none" stroke="${MOD_COL[m]}" stroke-width="6"/></g>`;
+      const cx = grp.reduce((a, p) => a + p.x, 0) / 4, cy = grp.reduce((a, p) => a + p.y, 0) / 4;
+      h += `<circle cx="${cx}" cy="${cy}" r="26" fill="${MOD_COL[m]}"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-size="32" font-weight="700" fill="#fff">${'ABCD'[m]}</text>`;
+    }
+    return h;
+  }
+  function thumb(list, mods = false) {
     const m = 16, vb = `${Y.x - m} ${Y.y - m} ${Y.w + 2 * m} ${Y.h + 2 * m}`;
     let h = `<svg viewBox="${vb}" aria-hidden="true"><rect x="${Y.x - m}" y="${Y.y - m}" width="${Y.w + 2 * m}" height="${Y.h + 2 * m}" fill="#fbfbf8"/>`;
     h += `<rect x="${Y.x + Y.t / 2}" y="${Y.y + Y.t / 2}" width="${Y.w - Y.t}" height="${Y.h - Y.t}" fill="none" stroke="#f4d21a" stroke-width="${Y.t}"/>`;
@@ -621,6 +637,7 @@ function variantLayout(v, Y, START, baseColors) {
       const c0 = p.flip ? HEX.K : HEX[p.c[0]], c1 = p.flip ? HEX.K : HEX[p.c[1]];
       h += `<g transform="translate(${p.x} ${p.y}) rotate(${p.a})"><rect x="-48" y="-16" width="48" height="32" fill="${c0}"/><rect x="0" y="-16" width="48" height="32" fill="${c1}"/><rect x="-48" y="-16" width="96" height="32" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2"/></g>`;
     }
+    if (mods) h += moduleMarks(list);
     return h + '</svg>';
   }
   function renderVariants() {
@@ -633,7 +650,7 @@ function variantLayout(v, Y, START, baseColors) {
       const parts = r.groups.filter(g => g.kind !== 'single').sort((a, b) => b.score - a.score).map(g => g.txt);
       const singles = r.groups.filter(g => g.kind === 'single').length + r.p1only.length;
       if (singles) parts.push(`${singles} × 1`);
-      b.innerHTML = `<span class="vt">${thumb(lay)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
+      b.innerHTML = `<span class="vt">${thumb(lay, v.modules)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
       if (v.own) { const t = document.createElement('span'); t.className = 'vtag own'; t.textContent = 'vaše skutečné barvy'; b.querySelector('.vb').appendChild(t); }
       if (v.ref) {
         const t = document.createElement('span'), d = byId[v.ref] != null ? byId[v.ref] - r.total : null;
@@ -671,7 +688,7 @@ function variantLayout(v, Y, START, baseColors) {
       const first = full[m.ids[0]], last = full[m.ids[3]];
       const inC = first.rev ? first.c[1] : first.c[0], outC = last.rev ? last.c[0] : last.c[1];
       const b = document.createElement('button'); b.type = 'button'; b.className = 'var';
-      b.innerHTML = `<span class="vt">${thumb(lay)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
+      b.innerHTML = `<span class="vt">${thumb(lay, true)}</span><span class="vb"><span class="vn"></span><b class="vp">${r.total}<small> b.</small></b><span class="vc"></span><span class="vx"></span></span>`;
       b.querySelector('.vn').textContent = `Krok ${k + 1}: modul ${m.key}`;
       b.querySelector('.vc').textContent = seq.join(' · ');
       b.querySelector('.vx').textContent = `${m.side}, ${m.shape}; začíná ${HEXN[inC]}, končí ${HEXN[outC]}` + (k === 3 ? '. Poslední spoj uzavře obrazec.' : `. Navazuje modul ${MODULES[k + 1].key}.`);

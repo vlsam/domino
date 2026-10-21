@@ -47,4 +47,32 @@
     });
     navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((reg) => reg.update());
   }
+
+  // Kontrola verze při spuštění (a při návratu do aplikace): dokud neproběhne, nejde vstoupit.
+  const enter = document.getElementById("enter"), status = document.getElementById("verStatus");
+  const say = (t) => { if (status) status.textContent = t; };
+  async function checkVersion() {
+    if (enter) enter.disabled = true;
+    say("Kontroluji verzi…");
+    try {
+      const res = await fetch("version.js?t=" + Date.now(), { cache: "no-store" });
+      const m = (await res.text()).match(/APP_VERSION = "([^"]+)"/);
+      const latest = m && m[1];
+      if (latest && latest !== APP_VERSION && sessionStorage.getItem("updatedTo") !== latest) {
+        sessionStorage.setItem("updatedTo", latest);
+        say("Načítám novou verzi " + latest + "…");
+        if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+        const reg = navigator.serviceWorker && (await navigator.serviceWorker.getRegistration());
+        if (reg) await reg.update();
+        location.reload();
+        return;
+      }
+      say("Aktuální verze");
+    } catch (e) {
+      say("Bez připojení – spuštěna uložená verze");
+    }
+    if (enter) enter.disabled = false;
+  }
+  checkVersion();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkVersion(); });
 })();

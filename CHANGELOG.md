@@ -2,6 +2,10 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.2.0 – 2026-10-21
+- Kontrola verze při spuštění a při návratu do aplikace: dokud neproběhne, nejde vstoupit; novější verze se hned načte.
+- Návrhy: obrazec 16 ze 4 stejných modulů (12 kolmých spojů, 348 b.) z vlastních dílů, moduly A–D zvýrazněné v náhledu.
+
 ## 1.1.0 – 2026-10-21
 - Simulace: díl puštěný do 25 mm a 30° od spoje se sousedním dílem se k němu přichytí (rovně nebo do „L“).
 - Návrhy: zobrazují se jen varianty se 160 a více body.
