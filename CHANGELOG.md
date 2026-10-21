@@ -2,6 +2,10 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.3.0 – 2026-10-21
+- Simulace přes celou obrazovku: v rohu rozpis bodů (díl 1 b., řada n×n, obrazec n×n + rohy + bonus).
+- Po „Vstoupit“ se otevře Simulace v běžném zobrazení, celá obrazovka jen tlačítkem; ve spodní liště ikona Domů (návrat na úvod).
+
 ## 1.2.1 – 2026-10-21
 - Úvodní obrazovka: grafika hrací plochy s výchozím rozmístěním dílů.
 

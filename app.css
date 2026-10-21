@@ -155,7 +155,7 @@ button:disabled{opacity:.4;cursor:default}
 .appbrand span{font-size:13px;color:var(--muted)}
 .appver{font:500 12px var(--mono);color:var(--muted)}
 .view{padding-top:18px}
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 .tabbar button{display:grid;justify-items:center;gap:2px;background:none;border:0;border-radius:0;color:var(--muted);font:600 12px var(--body);padding:8px 4px 9px;min-height:56px;cursor:pointer}
 .tabbar svg{width:24px;height:24px}
 .tabbar button[aria-current="page"]{color:var(--fg)}
@@ -170,3 +170,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .sim.full .actions{position:absolute;z-index:3;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));bottom:max(8px,env(safe-area-inset-bottom,0px))}
 .sim.full .actions button{background:rgba(255,255,255,.92);color:#1d1f22;border-color:rgba(0,0,0,.15)}
 .sim.full .hint{bottom:auto}
+.breakdown{display:none}
+.sim.full .breakdown{display:block;position:absolute;z-index:3;top:calc(max(8px,env(safe-area-inset-top,0px)) + 58px);left:max(8px,env(safe-area-inset-left,0px));max-width:calc(100% - 16px);max-height:32vh;overflow:auto;margin:0;padding:6px 10px;list-style:none;background:rgba(255,255,255,.88);color:#1d1f22;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.18);font:500 12px/1.45 var(--mono);font-variant-numeric:tabular-nums}
+.sim.full .breakdown li.loop{color:#15803d;font-weight:700}
+.sim.full .breakdown li.loopbad{color:#b45309}
+.sim.full .breakdown li.p1{color:#6b7280}
+.sim.full .hint{top:auto;bottom:calc(max(8px,env(safe-area-inset-bottom,0px)) + 60px)}

@@ -455,6 +455,20 @@ function variantLayout(v, Y, START, baseColors) {
     }
     if (!list.children.length) add('Ve žlutém obdélníku zatím nic není', 'přetáhněte díly prstem do žlutého obdélníku', 0);
     $('placed').textContent = result.st.filter(x => x.p1).length;
+    renderBreakdown(big, singles, p1);
+  }
+  // Rozpis bodů v rohu simulace: díl 1 b., řada n×n, obrazec n×n + rohy + bonus
+  const cornerWord = k => k === 1 ? 'roh' : k >= 2 && k <= 4 ? 'rohy' : 'rohů';
+  function calcText(g) {
+    return g.txt.replace(/(\d+) kolmé/, (m, k) => `${k} ${cornerWord(+k)}`).replace(' poloviční bonus', ' (½ bonus)');
+  }
+  function renderBreakdown(big, singles, p1) {
+    const ol = $('breakdown'); ol.textContent = '';
+    const line = (label, calc, pts, cls) => { const li = document.createElement('li'); if (cls) li.className = cls; li.textContent = `${label}: ${calc} = ${pts} b.`; ol.appendChild(li); };
+    big.forEach(g => line(g.kind === 'chain' ? `Řada ${g.n}` : g.kind === 'loop' ? `Obrazec ${g.n}` : `Obrazec ${g.n} (chybná barva)`, calcText(g), g.score, g.kind));
+    if (singles) line(singles === 1 ? 'Díl' : 'Díly', `${singles} × 1`, singles);
+    if (p1.length) line('Jen 1 b. (čára, obrácený, mimo spoj)', `${p1.length} × 1`, p1.length, 'p1');
+    if (!ol.children.length) line('Díl ve žlutém', '1 b. za kus', 0);
   }
 
 
@@ -688,8 +702,8 @@ function variantLayout(v, Y, START, baseColors) {
     document.querySelectorAll('.tabbar [data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'page' : 'false'));
     if (push && location.hash !== '#' + name) { try { history.pushState(null, '', '#' + name); } catch (e) {} }
     window.scrollTo(0, 0);
-    if (name === 'simulace') setFull(true, push);
-    else if (simEl.classList.contains('full')) setFull(false);
+    if (simEl.classList.contains('full')) setFull(false);
+    if (name === 'simulace') requestAnimationFrame(() => { view = fitView(); applyView(); });
   }
   function showIntro(push = true) {
     if (simEl.classList.contains('full')) setFull(false);
@@ -699,6 +713,7 @@ function variantLayout(v, Y, START, baseColors) {
   $('enter').onclick = () => showView('simulace');
   $('home').onclick = () => showIntro();
   document.querySelectorAll('.tabbar [data-go]').forEach(b => b.onclick = () => showView(b.dataset.go));
+  $('tabhome').onclick = () => showIntro();
   window.addEventListener('popstate', () => { const h = location.hash.slice(1); if (VIEWS.includes(h)) showView(h, false); else showIntro(false); });
   { const h = location.hash.slice(1); if (VIEWS.includes(h)) showView(h, false); }
   drawBoard(); applyView(); drawPieces(); doScore();
