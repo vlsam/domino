@@ -75,11 +75,6 @@ tr.top td.pts{color:var(--red)}
 .presets{display:flex;flex-wrap:wrap;gap:6px}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin:0;padding:0;list-style:none}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:5px}
-.settings{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
-.settings input[type=number]{width:84px}
-.chk{display:flex;gap:6px;align-items:center;font-size:14px;color:var(--fg)}
-.chk input{width:auto}
-details summary{cursor:pointer;font-weight:600}
 .warnbox{border-left:4px solid var(--red);background:var(--surface);padding:12px 14px;border-radius:0 6px 6px 0;font-size:14px}
 .warnbox p{margin:0}
 .src{font-size:13px;color:var(--muted)}
