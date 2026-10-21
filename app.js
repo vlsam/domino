@@ -626,7 +626,7 @@ function variantLayout(v, Y, START, baseColors) {
   function renderVariants() {
     const box = $('variants'); box.textContent = '';
     const rows = VARIANTS.map(v => { const lay = variantLayout(v, Y, START, DEF_COLORS); return { v, lay, r: scoreLayout(lay, Y) }; })
-      .filter(x => x.r.total >= 160 || x.v.ref).sort((a, b) => (b.v.own ? 1 : 0) - (a.v.own ? 1 : 0) || b.r.total - a.r.total);
+      .filter(x => x.r.total >= 160).sort((a, b) => (b.v.own ? 1 : 0) - (a.v.own ? 1 : 0) || b.r.total - a.r.total);
     const byId = Object.fromEntries(rows.map(x => [x.v.id, x.r.total]));
     for (const { v, lay, r } of rows) {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'var';
