@@ -501,7 +501,8 @@ function variantLayout(v, Y, START, baseColors) {
     const hn = $('hint'); if (hn) hn.hidden = true;
     ptrs.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
     try { svg.setPointerCapture(ev.pointerId); } catch (e) {}
-    if (ptrs.size === 2) {
+    const isFull = () => document.querySelector('.sim').classList.contains('full');
+    if (ptrs.size === 2 && isFull()) {
       if (drag && drag.kind === 'piece' && !drag.moved) { /* nic se nehnulo */ }
       drag = null; lastTap = null; startPinch(); return;
     }
@@ -511,7 +512,7 @@ function variantLayout(v, Y, START, baseColors) {
       const i = +g.dataset.i;
       if (sel !== i) { sel = i; gPieces.appendChild(g); doScore(); }
       drag = { kind: 'piece', i, g, dx: pieces[i].x - q.x, dy: pieces[i].y - q.y, sx: ev.clientX, sy: ev.clientY, moved: false };
-    } else drag = { kind: 'pan', sx: ev.clientX, sy: ev.clientY, v: { ...view }, moved: false };
+    } else drag = { kind: isFull() ? 'pan' : 'none', sx: ev.clientX, sy: ev.clientY, v: { ...view }, moved: false };
   });
   svg.addEventListener('pointermove', ev => {
     if (!ptrs.has(ev.pointerId)) return;
@@ -526,7 +527,7 @@ function variantLayout(v, Y, START, baseColors) {
       view = { x: cx - fx * nw - (nmx - mx) * ppm, y: cy - fy * v0.h * k - (nmy - my) * ppm, w: nw, h: v0.h * k };
       applyView(); return;
     }
-    if (!drag) return;
+    if (!drag || drag.kind === 'none') return;
     if (!drag.moved && Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy) > TAP_PX) drag.moved = true;
     if (!drag.moved) return;
     if (drag.kind === 'piece') {
@@ -576,12 +577,13 @@ function variantLayout(v, Y, START, baseColors) {
       if (lastTap && lastTap.i === drag.i && now - lastTap.t < DBL_MS) { rotateSel(90); lastTap = null; }
       else lastTap = { i: drag.i, t: now };
     } else if (drag && drag.kind === 'piece') { lastTap = null; snapPiece(drag.i); placeNode(drag.g, pieces[drag.i]); doScore(); }
-    if (drag && drag.kind === 'pan' && !drag.moved && sel >= 0) { sel = -1; lastTap = null; doScore(); }
+    if (drag && (drag.kind === 'pan' || drag.kind === 'none') && !drag.moved && sel >= 0) { sel = -1; lastTap = null; doScore(); }
     drag = null;
   };
   svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
   svg.addEventListener('dblclick', ev => ev.preventDefault());
-  svg.addEventListener('wheel', ev => { ev.preventDefault(); zoom(ev.deltaY < 0 ? 1 / 1.2 : 1.2, toView(ev)); }, { passive: false });
+  // Kolečko přibližuje jen přes celou obrazovku; v běžném zobrazení je hřiště pevné a kolečko posouvá stránku
+  svg.addEventListener('wheel', ev => { if (!simEl.classList.contains('full')) return; ev.preventDefault(); zoom(ev.deltaY < 0 ? 1 / 1.2 : 1.2, toView(ev)); }, { passive: false });
 
   function zoom(f, c) {
     c = c || { x: view.x + view.w / 2, y: view.y + view.h / 2 };
