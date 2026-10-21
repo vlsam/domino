@@ -543,6 +543,32 @@ function variantLayout(v, Y, START, baseColors) {
       view.x = drag.v.x - (ev.clientX - drag.sx) * k; view.y = drag.v.y - (ev.clientY - drag.sy) * k; applyView();
     }
   });
+  // Přichycení: puštěný díl se srovná do přesného spoje se sousedním dílem (rovně nebo do „L“), když je do 25 mm a 30°
+  const SNAP_MM = 25, SNAP_DEG = 30;
+  function angDiff(a, b) { const d = Math.abs(((a - b) % 360 + 360) % 360); return Math.min(d, 360 - d); }
+  function snapPiece(i) {
+    const P = pieces[i]; let best = null;
+    pieces.forEach((N, j) => {
+      if (j === i || !N.placed) return;
+      const g = geom(N), u = g.u, n = g.n, a = N.a, cands = [];
+      for (const s of [-1, 1]) cands.push({ x: N.x + s * u[0] * L, y: N.y + s * u[1] * L, axis: a });            // rovně za koncem
+      for (const sb of [-1, 1]) for (const side of [-1, 1]) {
+        const ax = N.x + sb * u[0] * (L / 2 - W / 2), ay = N.y + sb * u[1] * (L / 2 - W / 2);
+        cands.push({ x: ax + side * n[0] * (W / 2 + L / 2), y: ay + side * n[1] * (W / 2 + L / 2), axis: a + 90 });  // čelem k boku N
+        cands.push({ x: N.x + sb * u[0] * (L / 2 + W / 2) - side * n[0] * (L / 2 - W / 2), y: N.y + sb * u[1] * (L / 2 + W / 2) - side * n[1] * (L / 2 - W / 2), axis: a + 90 }); // bokem k čelu N
+      }
+      for (const c of cands) {
+        const ang = angDiff(P.a, c.axis) <= angDiff(P.a, c.axis + 180) ? c.axis : c.axis + 180;
+        const dA = angDiff(P.a, ang), d = Math.hypot(P.x - c.x, P.y - c.y);
+        if (d > SNAP_MM || dA > SNAP_DEG) continue;
+        const q = { x: c.x, y: c.y, a: ((Math.round(ang) % 360) + 360) % 360 }, Q = corners(q);
+        if (pieces.some((M, k) => k !== i && M.placed && penetration(Q, corners(M)) > 1)) continue;
+        const cost = d + dA;
+        if (!best || cost < best.cost) best = { ...q, cost };
+      }
+    });
+    if (best) { P.x = Math.round(best.x * 10) / 10; P.y = Math.round(best.y * 10) / 10; P.a = best.a; }
+  }
   function rotateSel(deg) {
     const p = pieces[sel]; p.a = ((p.a + deg) % 360 + 360) % 360;
     const g = gPieces.querySelector(`[data-i="${sel}"]`); if (g) placeNode(g, p); doScore();
@@ -554,7 +580,7 @@ function variantLayout(v, Y, START, baseColors) {
       const now = Date.now();
       if (lastTap && lastTap.i === drag.i && now - lastTap.t < DBL_MS) { rotateSel(90); lastTap = null; }
       else lastTap = { i: drag.i, t: now };
-    } else if (drag && drag.kind === 'piece') { lastTap = null; doScore(); }
+    } else if (drag && drag.kind === 'piece') { lastTap = null; snapPiece(drag.i); placeNode(drag.g, pieces[drag.i]); doScore(); }
     if (drag && drag.kind === 'pan' && !drag.moved && sel >= 0) { sel = -1; lastTap = null; doScore(); }
     drag = null;
   };

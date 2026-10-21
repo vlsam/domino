@@ -2,6 +2,9 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.1.0 – 2026-10-21
+- Simulace: díl puštěný do 25 mm a 30° od spoje se sousedním dílem se k němu přichytí (rovně nebo do „L“).
+
 ## 1.0.0 – 2026-10-21
 - PWA aplikace RoboSoutěž 2026 pro úlohu Domino: úvodní obrazovka (Vstoupit, verze a datum),
   sekce Pravidla, Simulace a Návrhy.
