@@ -264,13 +264,12 @@ function tilt(g, deg) {
 // Obrazec 16 ze skutečných dílů: díly 1–16 po řadě (po směru hodin), každá strana hřiště = jeden modul po 4.
 // Obrazec 348 b. podle vzoru uživatele: moduly 1–3 mají stejný tvar (otočený/posunutý), modul 4 se liší napojením krajního dílu; 12 kolmých spojů, 416 × 352 mm.
 const FOUR_SAME = 'LSLRRSRLRSRLRSRR';
-const MODULE_SHAPE = 'stejný tvar jako modul 1 (otočený nebo posunutý)';
-const MODULE4_SHAPE = 'stejné díly jako modul 1, ale krajní díl je napojený jinak';
+const MODULE_SHAPE = 'stejný tvar jako modul 1 (otočený a napojený z druhé strany)';
 const MODULES = [
   { key: '1', ids: [0, 1, 2, 3], side: 'horní strana', shape: MODULE_SHAPE },
   { key: '2', ids: [4, 5, 6, 7], side: 'pravá strana', shape: MODULE_SHAPE },
   { key: '3', ids: [8, 9, 10, 11], side: 'dolní strana', shape: MODULE_SHAPE },
-  { key: '4', ids: [12, 13, 14, 15], side: 'levá strana', shape: MODULE4_SHAPE },
+  { key: '4', ids: [12, 13, 14, 15], side: 'levá strana', shape: MODULE_SHAPE },
 ];
 // Obrazec 348 b. přesně podle sestavení od uživatele: [x, y, úhel] v mm, úhel už otáčí díl tak, aby barvy ve spojích seděly
 const OWN348 = [[224, 80, 90], [256, 144, 0], [352, 144, 0], [416, 112, 270], [480, 80, 180], [512, 144, 270], [512, 240, 90], [448, 272, 0],
@@ -288,7 +287,7 @@ function ownLoop(Y, base, upto = 4, steps = FOUR_SAME) {
   return out.slice(0, upto * 4);
 }
 const VARIANTS = [
-  { id: 'vase16', own: true, modules: true, name: 'Obrazec 16 ze 4 modulů', note: 'Vaše skutečné barvy: díly 1–16 za sebou, každá strana hřiště je jeden modul. Všechny spoje barevně sedí.', build: (Y, base) => ownLoop(Y, base) },
+  { id: 'vase16', own: true, modules: true, name: 'Obrazec 16 ze 4 stejných modulů', note: 'Vaše skutečné barvy: díly 1–16 za sebou, každá strana hřiště je jeden modul. Všechny spoje barevně sedí.', build: (Y, base) => ownLoop(Y, base) },
   { id: 'vase16r', own: true, modules: true, name: 'Obdélník 16 z vašich dílů', note: 'Vaše skutečné barvy, 2 typy modulů: rovná řada a tvar L.', build: (Y, base) => ownLoop(Y, base, 4, 'SSSSSRSRSSSSSRSR') },
   { id: 'o16r14', name: 'Obrazec 16, 14 rohů', note: 'Nejvíc kolmých spojů, co se vejde do žlutého.', build: Y => pack([G.loop('SRSRRLLRRLRRLRRL'.split(''))], Y) },
   { id: 'o16r10', name: 'Obrazec 16, 10 rohů', note: 'Obdélník se zuby, jednodušší na stavbu.', build: Y => pack([G.loop('SSSSRSRSRLLRRLRR'.split(''))], Y) },
@@ -674,7 +673,7 @@ function variantLayout(v, Y, START, baseColors) {
   }
   function moduleCard(list) {
     const d = document.createElement('div'); d.className = 'modpart';
-    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">3×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Tento tvar mají moduly 1–3 (modul 2 otočený o 90°, modul 3 posunutý). Modul 4 má stejné díly, jen krajní díl je napojený jinak.</span>`;
+    d.innerHTML = `<span class="mp-img">${moduleSvg(list)}</span><span class="mp-x">4×</span><span class="mp-t"><b>Opakující se část</b>4 díly, uvnitř 2 kolmé spoje, k další části se napojuje také kolmo. Stejný tvar mají všechny 4 moduly, každý jen otočený o 90° a napojený z druhé strany.</span>`;
     return d;
   }
   function renderModules() {
