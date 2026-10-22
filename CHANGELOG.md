@@ -2,6 +2,10 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.4.1 – 2026-10-22
+- Obrazec 348 b.: opravené napojení modulu 2 (díl 5 se napojuje zprava kolmo na díl 4); verze dat 4 ho jednorázově nastaví jako výchozí.
+- Návrhy: texty podle skutečného tvaru (moduly 1–3 stejný tvar, modul 4 jiné napojení krajního dílu); název „Obrazec 16 ze 4 modulů“.
+
 ## 1.4.0 – 2026-10-22
 - Přepínač světlý / tmavý režim (sluníčko / měsíc) v horní liště; volba se pamatuje, bez volby se řídí systémem.
 
