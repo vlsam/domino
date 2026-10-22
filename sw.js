@@ -2,7 +2,7 @@
 importScripts("version.js");
 
 const CACHE = "robosoutez-" + APP_VERSION;
-const PRECACHE = ["./", "index.html", "install.js", "version.js", "manifest.webmanifest", "app.js", "app.css",
+const PRECACHE = ["./", "index.html", "install.js", "theme.js", "version.js", "manifest.webmanifest", "app.js", "app.css",
   "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png", "img/hriste.jpg"];
 
 self.addEventListener("install", (event) => {

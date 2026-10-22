@@ -176,3 +176,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .modpart .mp-x{font:800 26px var(--display)}
 .modpart .mp-t{font-size:13px;color:var(--muted);min-width:0}
 .modpart .mp-t b{display:block;color:var(--fg);font-size:14px}
+.appright{display:flex;align-items:center;gap:10px}
+.themebtn{display:grid;place-items:center;width:40px;height:40px;padding:0;border-radius:50%;background:var(--surface);color:var(--fg);border:1px solid var(--line);cursor:pointer}
+.themebtn svg{width:22px;height:22px}
+.themebtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}

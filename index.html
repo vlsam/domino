@@ -17,6 +17,7 @@
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="app.css">
+<script src="theme.js"></script>
 <script src="version.js" defer></script>
 <script src="app.js" defer></script>
 <script src="install.js" defer></script>
@@ -40,7 +41,13 @@
 <div id="app" class="app" hidden>
   <header class="appbar">
     <button id="home" class="appbrand" type="button" aria-label="Zpět na úvod"><b>RoboSoutěž 2026</b><span>Domino</span></button>
-    <span class="appver" id="appver"></span>
+    <span class="appright">
+      <span class="appver" id="appver"></span>
+      <button id="themeBtn" class="themebtn" type="button" aria-label="Přepnout režim">
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true" hidden><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7 7 17M17 7l1.7-1.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+    </span>
   </header>
   <main class="views">
     <div class="view wrap" id="v-pravidla" data-view="pravidla" hidden>

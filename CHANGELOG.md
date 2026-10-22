@@ -2,6 +2,9 @@
 
 Formát: verze – datum – co se změnilo. Nejnovější nahoře.
 
+## 1.4.0 – 2026-10-22
+- Přepínač světlý / tmavý režim (sluníčko / měsíc) v horní liště; volba se pamatuje, bez volby se řídí systémem.
+
 ## 1.3.4 – 2026-10-21
 - Obrazec 348 b. podle správného sestavení (díly 1–16 a blok 1a–1d); moduly 2–4 jsou jen otočený modul 1. Verze dat 3 ho jednorázově nastaví jako výchozí.
 - Návrhy: přesný popis modulů (modul 3 posunutý, 2 a 4 otočené o 90°).
